@@ -190,7 +190,7 @@ export default function Home() {
                 to={stat.value}
                 separator=","
                 direction="up"
-                duration={5}
+                duration={3}
                 className="count-up-text"
               />
               <span className="ml-1">{stat.suffix}</span>
