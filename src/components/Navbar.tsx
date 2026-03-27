@@ -30,7 +30,7 @@ export default function Navbar() {
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center space-x-8">
             <Link
-              href="/course"
+              href="/courses"
               className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
             >
               Courses
@@ -102,8 +102,8 @@ export default function Navbar() {
             exit={{ opacity: 0, y: -10 }}
             className="md:hidden bg-white border-b border-gray-100 px-4 py-4 space-y-4"
           >
-            <Link href="/" className="block text-gray-600 font-medium">
-              Courses
+            <Link href="/courses" className="block text-gray-600 font-medium">
+              Courses 
             </Link>
             <Link href="/mentors" className="block text-gray-600 font-medium">
               Mentors
