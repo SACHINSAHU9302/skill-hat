@@ -6,10 +6,19 @@ import { motion, AnimatePresence } from "motion/react";
 import { User, LayoutDashboard, LogOut, Menu, X } from "lucide-react";
 import { useAuth } from "@/src/context/AuthContext";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+
+  const pathname = usePathname();
+
+  const hideNavbarRouters = ["/admin", "/mentors", "/login", "/register"];
+
+  const shouldHide = hideNavbarRouters.includes(pathname) || pathname.startsWith("/course/") || pathname.startsWith("/mentors/");
+
+  if (shouldHide) return null;
 
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-gray-100 z-50">
@@ -103,7 +112,7 @@ export default function Navbar() {
             className="md:hidden bg-white border-b border-gray-100 px-4 py-4 space-y-4"
           >
             <Link href="/courses" className="block text-gray-600 font-medium">
-              Courses 
+              Courses
             </Link>
             <Link href="/mentors" className="block text-gray-600 font-medium">
               Mentors

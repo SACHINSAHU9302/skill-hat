@@ -26,9 +26,7 @@ export default function Admin() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
 
-  if (!user || user.role !== 'admin') {
-    return <div className="min-h-screen flex items-center justify-center">Access Denied</div>;
-  }
+
 
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
