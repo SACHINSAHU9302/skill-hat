@@ -155,30 +155,6 @@ const initialEnrollments: Enrollment[] = [
     enrolledDate: "2026-03-15T10:30:00Z",
     status: "Active",
   },
-  {
-    id: "2",
-    courseId: "1",
-    studentName: "Neha Gupta",
-    studentEmail: "neha@example.com",
-    enrolledDate: "2026-03-16T14:20:00Z",
-    status: "Active",
-  },
-  {
-    id: "3",
-    courseId: "2",
-    studentName: "Arjun Reddy",
-    studentEmail: "arjun@example.com",
-    enrolledDate: "2026-03-14T09:15:00Z",
-    status: "Completed",
-  },
-  {
-    id: "4",
-    courseId: "3",
-    studentName: "Sneha Iyer",
-    studentEmail: "sneha@example.com",
-    enrolledDate: "2026-03-20T11:45:00Z",
-    status: "Active",
-  },
 ];
 
 export function DataProvider({ children }: { children: ReactNode }) {

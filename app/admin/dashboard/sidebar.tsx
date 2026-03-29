@@ -10,7 +10,6 @@ export function Sidebar() {
   const navItems = [
   { path: "/admin", label: "Dashboard", icon: MdDashboard },
   { path: "/admin/internships", label: "Internships", icon: MdWork },
-  { path: "/admin/courses", label: "Courses", icon: MdSchool },
   { path: "/admin/mentors", label: "Mentors", icon: MdPerson },
 ];
 
@@ -26,7 +25,7 @@ export function Sidebar() {
       {/* Header (fixed) */}
       <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-purple-600">
         <h1 className="text-2xl font-bold text-white">Admin Panel</h1>
-        <p className="text-sm text-blue-100 mt-1">Internships & Courses</p>
+        <p className="text-sm text-blue-100 mt-1">Manage Credentials</p>
       </div>
 
       {/* Scrollable area */}

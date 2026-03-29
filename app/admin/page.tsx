@@ -5,70 +5,14 @@ import Link from "next/link";
 import { motion } from "motion/react";
 
 export default function Dashboard() {
-  const { internships, courses, mentors, enrollments, getTotalRevenue } = useData();
+  const { courses, mentors, enrollments, getTotalRevenue } = useData();
 
-  const activeInternships = internships.filter((i) => i.status === "Active").length;
   const activeCourses = courses.filter((c) => c.status === "Active").length;
   const activeMentors = mentors.filter((m) => m.status === "Active").length;
   const totalEnrollments = enrollments.filter((e) => e.status === "Active").length;
   const totalRevenue = getTotalRevenue();
 
-  const stats = [
-    {
-      title: "Total Internships",
-      value: internships.length,
-      active: `${activeInternships} active`,
-      icon: MdWork,
-      gradient: "from-blue-500 to-blue-600",
-      bgGradient: "from-blue-50 to-blue-100",
-      link: "/internships",
-    },
-    {
-      title: "Total Courses",
-      value: courses.length,
-      active: `${activeCourses} active`,
-      icon: MdSchool,
-      gradient: "from-green-500 to-green-600",
-      bgGradient: "from-green-50 to-green-100",
-      link: "/courses",
-    },
-    {
-      title: "Total Mentors",
-      value: mentors.length,
-      active: `${activeMentors} active`,
-      icon: MdPerson,
-      gradient: "from-purple-500 to-purple-600",
-      bgGradient: "from-purple-50 to-purple-100",
-      link: "/mentors",
-    },
-    {
-      title: "Active Enrollments",
-      value: totalEnrollments,
-      active: `${enrollments.length} total`,
-      icon: MdPeople,
-      gradient: "from-orange-500 to-orange-600",
-      bgGradient: "from-orange-50 to-orange-100",
-      link: "/courses",
-    },
-    {
-      title: "Total Revenue",
-      value: `₹${(totalRevenue / 1000).toFixed(1)}K`,
-      active: "+12% this month",
-      icon: MdAttachMoney,
-      gradient: "from-pink-500 to-pink-600",
-      bgGradient: "from-pink-50 to-pink-100",
-      link: "#",
-    },
-    {
-      title: "Growth Rate",
-      value: "+24%",
-      active: "vs last month",
-      icon: MdTrendingUp,
-      gradient: "from-teal-500 to-teal-600",
-      bgGradient: "from-teal-50 to-teal-100",
-      link: "#",
-    },
-  ];
+  
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -105,41 +49,6 @@ export default function Dashboard() {
         <p className="text-gray-600 mt-2">Welcome back! Here's what's happening today.</p>
       </motion.div>
 
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
-      >
-        {stats.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <motion.div key={index} variants={itemVariants} whileHover={{ scale: 1.05, y: -5 }}>
-              <Link
-                href={stat.link}
-                className="block bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-2xl transition-all duration-300"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`bg-gradient-to-br ${stat.bgGradient} p-4 rounded-xl`}>
-                    <Icon className={`w-8 h-8 bg-gradient-to-br ${stat.gradient} bg-clip-text text-transparent`} style={{ WebkitTextFillColor: 'transparent' }} />
-                  </div>
-                  <div className={`px-3 py-1 bg-gradient-to-r ${stat.gradient} rounded-full`}>
-                    <span className="text-xs text-white font-medium">LIVE</span>
-                  </div>
-                </div>
-                <h3 className="text-gray-500 text-sm mb-2">{stat.title}</h3>
-                <p className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
-                  {stat.value}
-                </p>
-                <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${stat.gradient}`}></div>
-                  <p className="text-sm text-gray-600">{stat.active}</p>
-                </div>
-              </Link>
-            </motion.div>
-          );
-        })}
-      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <motion.div

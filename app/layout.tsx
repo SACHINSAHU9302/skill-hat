@@ -13,7 +13,7 @@ const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "NexusAcademy | Professional Learning Platform",
+  title: "Skill-hatt | Professional Learning Platform",
   description:
     "Empowering the next generation of professionals through expert-led courses and industry-recognized certifications.",
 };

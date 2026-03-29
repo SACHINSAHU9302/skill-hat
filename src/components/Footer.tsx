@@ -28,12 +28,12 @@ export default function Footer() {
                 <GraduationCap size={18} />
               </div>
               <span className="text-xl font-bold tracking-tight">
-                NexusAcademy
+                Skillhat
               </span>
             </div>
             <p className="text-gray-500 max-w-sm leading-relaxed">
               Empowering the next generation of professionals through expert-led
-              courses and industry-recognized certifications.
+              Internship and industry-recognized certifications.
             </p>
           </div>
           <div>
@@ -44,7 +44,7 @@ export default function Footer() {
                   href="/"
                   className="hover:text-blue-600 transition-colors"
                 >
-                  All Courses
+                  All Internship
                 </Link>
               </li>
               <li>

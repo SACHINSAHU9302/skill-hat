@@ -84,7 +84,7 @@ export default function AddInternship({
         formDataImg.append("image", image);
 
         const res = await fetch(
-          "http://localhost:8000/upload/internship/images/",
+          "https://skillhat-backend.onrender.com/upload/internship/images/",
           {
             method: "POST",
             body: formDataImg,
@@ -107,7 +107,7 @@ export default function AddInternship({
 
       // ✅ STEP 3: CREATE
       if (!isEdit) {
-        const res = await fetch("http://localhost:8000/upload/internship/", {
+        const res = await fetch("https://skillhat-backend.onrender.com/upload/internship/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -123,7 +123,7 @@ export default function AddInternship({
       // ✅ STEP 4: UPDATE
       else {
         const res = await fetch(
-          `http://localhost:8000/update_internship/${internshipId}/`,
+          `https://skillhat-backend.onrender.com/upload/update_internship/${internshipId}/`,
           {
             method: "PUT",
             headers: {

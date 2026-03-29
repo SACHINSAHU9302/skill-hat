@@ -22,7 +22,9 @@ export default function EditInternshipPage() {
 
     const fetchInternship = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/upload/edit/${internshipId}/`)
+        const res = await fetch(
+          `https://skillhat-backend.onrender.com/upload/edit/${internshipId}/`,
+        );
 
         if (!res.ok) throw new Error("Failed to fetch internship");
 
@@ -73,18 +75,13 @@ export default function EditInternshipPage() {
   // 🚫 Not found
   if (!internship) {
     return (
-      <div className="p-10 text-center text-gray-500">
-        Internship not found
-      </div>
+      <div className="p-10 text-center text-gray-500">Internship not found</div>
     );
   }
 
   // ✅ Render SAME UI as add page
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <AddInternship initialData={internship} isEditMode />
     </motion.div>
   );
