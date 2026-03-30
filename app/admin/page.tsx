@@ -1,6 +1,8 @@
 "use client";
 import { useData } from "@/src/context/DataContext";
-import { MdWork, MdSchool, MdPerson, MdTrendingUp, MdPeople, MdAttachMoney } from "react-icons/md";
+import { MdWork, MdSchool, MdPerson, MdPeople, MdAttachMoney, MdTrendingUp, } from "react-icons/md";
+import { FaUsers, FaRupeeSign } from "react-icons/fa";
+import { TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { motion } from "motion/react";
 
@@ -92,8 +94,10 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+    <div className="px-4 pt-4 pb-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
+
       <motion.div
+
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -109,36 +113,32 @@ export default function Dashboard() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
-      >
-        {stats.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <motion.div key={index} variants={itemVariants} whileHover={{ scale: 1.05, y: -5 }}>
-              <Link
-                href={stat.link}
-                className="block bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-2xl transition-all duration-300"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`bg-gradient-to-br ${stat.bgGradient} p-4 rounded-xl`}>
-                    <Icon className={`w-8 h-8 bg-gradient-to-br ${stat.gradient} bg-clip-text text-transparent`} style={{ WebkitTextFillColor: 'transparent' }} />
-                  </div>
-                  <div className={`px-3 py-1 bg-gradient-to-r ${stat.gradient} rounded-full`}>
-                    <span className="text-xs text-white font-medium">LIVE</span>
-                  </div>
+        className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 mb-8"
+      >        {stats.map((stat, index) => {
+        const Icon = stat.icon;
+        return (
+          <motion.div key={index} variants={itemVariants} whileHover={{ scale: 1.05, y: -5 }}>
+            <Link
+              href={stat.link}
+              className="block bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 hover:shadow-xl hover:scale-[1.02] transition-all duration-300" >               <div className="flex items-center justify-between mb-4">
+                <div
+                  className={`w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-md`}
+                >
+                  <Icon className="text-white w-6 h-6" />
                 </div>
-                <h3 className="text-gray-500 text-sm mb-2">{stat.title}</h3>
-                <p className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
-                  {stat.value}
-                </p>
-                <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${stat.gradient}`}></div>
-                  <p className="text-sm text-gray-600">{stat.active}</p>
-                </div>
-              </Link>
-            </motion.div>
-          );
-        })}
+
+              </div>
+              <h3 className="text-gray-500 text-sm mb-2">{stat.title}</h3>
+              <p className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">                  {stat.value}
+              </p>
+              <div className="flex items-center gap-2">
+                <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${stat.gradient}`}></div>
+                <p className="text-sm text-gray-600">{stat.active}</p>
+              </div>
+            </Link>
+          </motion.div>
+        );
+      })}
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -177,10 +177,10 @@ export default function Dashboard() {
                     </div>
                   </div>
                   <div className={`px-3 py-1 rounded-full text-xs font-medium ${course.level === "Beginner"
-                      ? "bg-green-100 text-green-800"
-                      : course.level === "Intermediate"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
+                    ? "bg-green-100 text-green-800"
+                    : course.level === "Intermediate"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : "bg-red-100 text-red-800"
                     }`}>
                     {course.level}
                   </div>
@@ -276,10 +276,10 @@ export default function Dashboard() {
                     <td className="px-4 py-3">
                       <span
                         className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${enrollment.status === "Active"
-                            ? "bg-green-100 text-green-800"
-                            : enrollment.status === "Completed"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-gray-100 text-gray-800"
+                          ? "bg-green-100 text-green-800"
+                          : enrollment.status === "Completed"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-gray-100 text-gray-800"
                           }`}
                       >
                         {enrollment.status}
