@@ -47,24 +47,14 @@ export default function InternshipPage() {
         </h1>
 
         <p className="text-gray-500 max-w-xl mx-auto mb-10">
-          Discover real-world opportunities and kickstart your career 🚀
+          Discover real-world opportunities and kickstart your career 
         </p>
 
         {/* SEARCH */}
-        <div className="max-w-xl mx-auto relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search internships..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 rounded-2xl border bg-gray-50 focus:ring-2 focus:ring-blue-500/20 outline-none"
-          />
-        </div>
       </section>
 
       {/* GRID */}
-      <section className="max-w-7xl mx-auto px-4 py-20">
+      <section className="bg-gray-50/50 max-w-7xl mx-auto px-4 py-20">
         {loading ? (
           <div className="grid md:grid-cols-3 gap-8">
             {[1,2,3,4,5,6].map((i) => (

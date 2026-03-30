@@ -86,13 +86,6 @@ const MentorCard = ({ mentor }: any) => {
           {mentor.totalStudents || 0}
         </span>
       </div>
-
-      <Link
-        href={`/mentor/${mentor._id}`}
-        className="text-blue-600 text-sm font-semibold mt-2 inline-block"
-      >
-        View →
-      </Link>
     </motion.div>
   );
 };

@@ -60,7 +60,7 @@ export default function Mentors() {
           </motion.h1>
 
           <p className="text-gray-500 mb-10 max-w-xl mx-auto">
-            Connect with top mentors and grow faster 🚀
+            Connect with top mentors and grow faster 
           </p>
 
           {/* SEARCH */}
@@ -169,17 +169,7 @@ export default function Mentors() {
                   </div>
 
                   {/* FOOTER */}
-                  <div className="flex justify-between items-center pt-4 border-t">
 
-                    <Link
-                      href={`/mentor/${mentor._id}`}
-                      className="text-sm font-semibold text-gray-900 hover:text-blue-600 flex items-center"
-                    >
-                      View Profile
-                      <ChevronRight className="ml-1 text-blue-600" size={16} />
-                    </Link>
-
-                  </div>
 
                 </div>
               </motion.div>

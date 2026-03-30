@@ -1,18 +1,81 @@
 "use client";
 import { useData } from "@/src/context/DataContext";
-import { MdWork, MdSchool, MdPerson, MdTrendingUp, MdPeople, MdAttachMoney } from "react-icons/md";
+import {
+  MdWork,
+  MdSchool,
+  MdPerson,
+  MdTrendingUp,
+  MdPeople,
+  MdAttachMoney,
+} from "react-icons/md";
 import Link from "next/link";
 import { motion } from "motion/react";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
-  const { courses, mentors, enrollments, getTotalRevenue } = useData();
+  const { enrollments, getTotalRevenue } = useData();
+  const [internships, setInternships] = useState<any[]>([]);
+  const [mentors, setMentors] = useState<any[]>([]);
 
-  const activeCourses = courses.filter((c) => c.status === "Active").length;
   const activeMentors = mentors.filter((m) => m.status === "Active").length;
-  const totalEnrollments = enrollments.filter((e) => e.status === "Active").length;
+  const totalEnrollments = enrollments.filter(
+    (e) => e.status === "Active",
+  ).length;
   const totalRevenue = getTotalRevenue();
 
-  
+  const fetchInternships = async () => {
+    try {
+      const res = await fetch(
+        "https://skillhat-backend.onrender.com/upload/internships/list/",
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch internships");
+      }
+
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error("Fetch internships error:", error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    const load = async () => {
+      const data = await fetchInternships();
+      setInternships(data);
+    };
+
+    load();
+  }, []);
+
+  const fetchMentors = async () => {
+    try {
+      const res = await fetch(
+        "https://skillhat-backend.onrender.com/api/mentors/list/",
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch mentors");
+      }
+
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error("Fetch mentors error:", error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    const load = async () => {
+      const data = await fetchMentors();
+      setMentors(data);
+    };
+
+    load();
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -46,9 +109,10 @@ export default function Dashboard() {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
           Dashboard
         </h1>
-        <p className="text-gray-600 mt-2">Welcome back! Here's what's happening today.</p>
+        <p className="text-gray-600 mt-2">
+          Welcome back! Here's what's happening today.
+        </p>
       </motion.div>
-
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <motion.div
@@ -58,15 +122,20 @@ export default function Dashboard() {
           className="bg-white rounded-2xl border border-gray-200 p-6 shadow-lg"
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Popular Courses</h2>
-            <Link href="/courses" className="text-blue-600 hover:underline text-sm font-medium">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Popular Interships
+            </h2>
+            <Link
+              href="/admin/internships"
+              className="text-blue-600 hover:underline text-sm font-medium"
+            >
               View all →
             </Link>
           </div>
           <div className="space-y-4">
-            {courses.slice(0, 3).map((course, index) => (
+            {internships.slice(0, 3).map((item, index) => (
               <motion.div
-                key={course.id}
+                key={item._id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 * index }}
@@ -75,23 +144,32 @@ export default function Dashboard() {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{course.title}</h3>
-                    <p className="text-sm text-gray-600 mt-1">By {course.instructor}</p>
+                    <h3 className="font-semibold text-gray-900">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      By {item.company}
+                    </p>
                     <div className="flex items-center gap-4 mt-2">
                       <span className="text-xs text-gray-500 flex items-center gap-1">
                         <MdPeople className="w-4 h-4" />
-                        {course.enrollmentCount} students
+                        {item.enrollmentCount} students
                       </span>
-                      <span className="text-xs font-medium text-green-600">{course.price}</span>
+                      <span className="text-xs font-medium text-green-600">
+                        {item.price}
+                      </span>
                     </div>
                   </div>
-                  <div className={`px-3 py-1 rounded-full text-xs font-medium ${course.level === "Beginner"
-                      ? "bg-green-100 text-green-800"
-                      : course.level === "Intermediate"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
-                    }`}>
-                    {course.level}
+                  <div
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      item.level === "Beginner"
+                        ? "bg-green-100 text-green-800"
+                        : item.level === "Intermediate"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {item.level}
                   </div>
                 </div>
               </motion.div>
@@ -107,33 +185,44 @@ export default function Dashboard() {
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Top Mentors</h2>
-            <Link href="/mentors" className="text-purple-600 hover:underline text-sm font-medium">
+            <Link
+              href="/admin/mentors"
+              className="text-purple-600 hover:underline text-sm font-medium"
+            >
               View all →
             </Link>
           </div>
           <div className="space-y-4">
-            {mentors.slice(0, 3).map((mentor, index) => (
+            {mentors.slice(0, 3).map((item, index) => (
               <motion.div
-                key={mentor.id}
+                key={item._id}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 * index }}
                 whileHover={{ x: -5 }}
                 className="flex items-center gap-4 p-3 bg-gradient-to-r from-purple-50 to-transparent rounded-lg"
               >
+                {/* AVATAR */}
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-lg">
-                  {mentor.name.charAt(0)}
+                  {item.name?.charAt(0) || "M"}
                 </div>
+
+                {/* CONTENT */}
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">{mentor.name}</h3>
-                  <p className="text-xs text-gray-600">{mentor.expertise.split(",")[0]}</p>
+                  <h3 className="font-semibold text-gray-900">{item.name}</h3>
+
+                  <p className="text-xs text-gray-600">
+                    {item.expertise?.split(",")[0] || "Expert"}
+                  </p>
+
                   <div className="flex items-center gap-3 mt-1">
                     <span className="text-xs text-gray-500 flex items-center gap-1">
                       <MdPeople className="w-3 h-3" />
-                      {mentor.totalStudents} students
+                      {item.totalStudents || 0} students
                     </span>
+
                     <span className="text-xs text-yellow-600 flex items-center gap-1">
-                      ★ {mentor.rating}
+                    Rating  ★ {item.rating || 0}
                     </span>
                   </div>
                 </div>
@@ -150,21 +239,30 @@ export default function Dashboard() {
         className="mt-6 bg-white rounded-2xl border border-gray-200 p-6 shadow-lg"
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Recent Enrollments</h2>
+          <h2 className="text-2xl font-bold text-gray-900">
+            Recent Enrollments
+          </h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Course</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  Student
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  Course
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  Date
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                  Status
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {enrollments.slice(0, 5).map((enrollment, index) => {
-                const course = courses.find((c) => c.id === enrollment.courseId);
                 return (
                   <motion.tr
                     key={enrollment.id}
@@ -175,21 +273,29 @@ export default function Dashboard() {
                   >
                     <td className="px-4 py-3">
                       <div>
-                        <p className="text-sm font-medium text-gray-900">{enrollment.studentName}</p>
-                        <p className="text-xs text-gray-500">{enrollment.studentEmail}</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {enrollment.studentName}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {enrollment.studentEmail}
+                        </p>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-gray-700">{course?.title}</td>
+
                     <td className="px-4 py-3 text-sm text-gray-600">
-                      {new Date(enrollment.enrolledDate).toLocaleDateString("en-GB")}                    </td>
+                      {new Date(enrollment.enrolledDate).toLocaleDateString(
+                        "en-GB",
+                      )}{" "}
+                    </td>
                     <td className="px-4 py-3">
                       <span
-                        className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${enrollment.status === "Active"
+                        className={`inline-flex px-2 py-1 text-xs rounded-full font-medium ${
+                          enrollment.status === "Active"
                             ? "bg-green-100 text-green-800"
                             : enrollment.status === "Completed"
                               ? "bg-blue-100 text-blue-800"
                               : "bg-gray-100 text-gray-800"
-                          }`}
+                        }`}
                       >
                         {enrollment.status}
                       </span>

@@ -7,7 +7,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div>
       <Sidebar />
 
-      {/* 👇 YE LINE FIX HAI */}
+  
       <div className="ml-64 min-h-screen">
         {children}
       </div>
