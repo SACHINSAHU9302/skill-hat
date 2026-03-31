@@ -1,7 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
@@ -13,10 +12,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
-import { MdArrowBack } from "react-icons/md";
+import { 
+  MdArrowBack, 
+  MdCloudUpload, 
+  MdBusiness, 
+  MdLocationOn, 
+  MdAccessTime, 
+  MdCurrencyRupee,
+  MdCheckCircle,
+  MdTitle,
+  MdDescription,
+  MdList,
+  MdSettings,
+  MdImage
+} from "react-icons/md";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 
 const API = process.env.NEXT_PUBLIC_APP_URL;
 
@@ -28,18 +40,14 @@ export default function AddInternship({
   isEditMode?: boolean;
 }) {
   const navigate = useRouter();
-  const [image, setImge] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
   const params = useParams();
-  const id = typeof params.id === "string" ? params.id : params.id?.[0];
+  
+  const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isEdit = isEditMode;
-  const internshipId = Array.isArray(id) ? id[0] : id;
-
-  const handleImageChange = (file: File) => {
-    setImge(file);
-    setPreview(URL.createObjectURL(file));
-  };
+  const rawId = params?.id;
+  const internshipId = Array.isArray(rawId) ? rawId[0] : rawId;
 
   const [formData, setFormData] = useState({
     title: "",
@@ -57,30 +65,34 @@ export default function AddInternship({
   useEffect(() => {
     if (initialData) {
       setFormData({
-        title: initialData.title,
-        company: initialData.company,
-        location: initialData.location,
-        duration: initialData.duration,
-        stipend: initialData.stipend,
-        description: initialData.description,
-        requirements: initialData.requirements,
-        status: initialData.status,
-        imageUrl: initialData.imageUrl,
-        public_id: initialData.public_id,
+        title: initialData.title || "",
+        company: initialData.company || "",
+        location: initialData.location || "",
+        duration: initialData.duration || "",
+        stipend: initialData.stipend || "",
+        description: initialData.description || "",
+        requirements: initialData.requirements || "",
+        status: initialData.status || "Active",
+        imageUrl: initialData.imageUrl || "",
+        public_id: initialData.public_id || "",
       });
-
       setPreview(initialData.imageUrl);
     }
   }, [initialData]);
 
+  const handleImageChange = (file: File) => {
+    setImage(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       let imageUrl = formData.imageUrl || null;
       let public_id = formData.public_id || null;
 
-      // ✅ STEP 1: Upload image (ONLY if new image selected)
       if (image) {
         const formDataImg = new FormData();
         formDataImg.append("image", image);
@@ -94,7 +106,6 @@ export default function AddInternship({
         );
 
         if (!res.ok) throw new Error("Image upload failed");
-
         const data = await res.json();
         imageUrl = data.imageUrl;
         public_id = data.publicId;
@@ -137,197 +148,240 @@ export default function AddInternship({
 
         if (!res.ok) throw new Error("Update failed");
 
-        toast.success("Internship updated!");
-      }
+      const res = await fetch(url, {
+        method: isEditMode ? "PUT" : "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(finalData),
+      });
 
-      // ✅ STEP 5: Redirect
+      if (!res.ok) throw new Error("Request failed");
+      
+      toast.success(isEditMode ? "Internship updated!" : "Internship published!");
       navigate.push("/admin/internships");
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong!");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleChange = (field: string, value: string) => {
-    setFormData({ ...formData, [field]: value });
-  };
-
   return (
-    <div className="p-8">
-      <Button
-        variant="ghost"
-        className="mb-6 flex items-center gap-2 hover:bg-gray-100"
-        onClick={() => navigate.push("/admin/internships")}
-      >
-        <MdArrowBack className="w-5 h-5" />
-        Back to Internships
-      </Button>
+    <div className="min-h-screen p-6 md:p-12 lg:p-16">
+      <div className="w-full max-w-5xl mx-auto">
+        
+        {/* TOP BAR */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+            <Button
+              variant="ghost"
+              className="mb-4 pl-0 flex items-center gap-2 hover:bg-transparent text-gray-400 hover:text-indigo-600 font-bold transition-colors"
+              onClick={() => navigate.push("/admin/internships")}
+            >
+              <MdArrowBack className="text-xl" />
+              Back to Dashboard
+            </Button>
+            <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
+              {isEditMode ? "Edit Opportunity" : "New Internship"}
+            </h1>
+            <p className="text-gray-400 font-medium mt-2">
+               Fill in the requirements and manage your listings.
+            </p>
+          </motion.div>
+        </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-2xl"
-      >
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-          {isEdit ? "Edit Internship" : "Add New Internship"}
-        </h1>
-        <p className="text-gray-600 mb-8">
-          {isEdit
-            ? "Update internship details"
-            : "Fill in the details to create a new internship listing"}
-        </p>
-
-        <form
+        <motion.form
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           onSubmit={handleSubmit}
-          className="bg-white rounded-2xl border border-gray-200 p-8 space-y-6 shadow-lg"
+          className="grid grid-cols-1 lg:grid-cols-12 gap-10"
         >
-          <div className="space-y-3">
-            <Label>Internship Banner</Label>
-
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-500 transition cursor-pointer">
+          {/* LEFT: IMAGE SECTION */}
+          <div className="lg:col-span-4 space-y-4">
+            <Label className="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 ml-1 flex items-center gap-2">
+              <MdImage className="text-indigo-500 text-sm" /> Banner Image
+            </Label>
+            <div className="relative group overflow-hidden rounded-[32px] border-2 border-dashed border-gray-200 bg-white/50 hover:bg-white hover:border-indigo-200 transition-all cursor-pointer aspect-[4/5] flex items-center justify-center shadow-sm">
               <input
                 type="file"
                 accept="image/*"
                 className="hidden"
-                id="imageUpload"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) {
-                    handleImageChange(e.target.files[0]);
-                  }
-                }}
+                id="imgUp"
+                onChange={(e) => e.target.files?.[0] && handleImageChange(e.target.files[0])}
               />
-
-              <label htmlFor="imageUpload" className="cursor-pointer">
+              <label htmlFor="imgUp" className="cursor-pointer w-full h-full flex items-center justify-center">
                 {preview ? (
-                  <img
-                    src={preview}
-                    alt="Preview"
-                    className="mx-auto h-40 rounded-lg object-cover"
-                  />
+                  <div className="relative w-full h-full">
+                    <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-[32px]" />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-[32px]">
+                       <MdCloudUpload className="text-white text-4xl" />
+                    </div>
+                  </div>
                 ) : (
-                  <div className="text-gray-500">
-                    <p className="font-medium">Click to upload image</p>
-                    <p className="text-sm">PNG, JPG up to 5MB</p>
+                  <div className="text-center p-6 text-gray-400">
+                    <MdCloudUpload className="text-4xl mx-auto mb-2 group-hover:scale-110 transition-transform text-indigo-400" />
+                    <p className="font-bold text-sm">Upload Banner</p>
                   </div>
                 )}
               </label>
             </div>
-          </div>
-          <div>
-            <Label htmlFor="title">Internship Title *</Label>
-            <Input
-              id="title"
-              value={formData.title}
-              onChange={(e) => handleChange("title", e.target.value)}
-              placeholder="e.g. Frontend Developer Intern"
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="company">Company Name *</Label>
-              <Input
-                id="company"
-                value={formData.company}
-                onChange={(e) => handleChange("company", e.target.value)}
-                placeholder="e.g. Tech Corp"
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="location">Location *</Label>
-              <Input
-                id="location"
-                value={formData.location}
-                onChange={(e) => handleChange("location", e.target.value)}
-                placeholder="e.g. Mumbai, India"
-                required
-              />
+            
+            <div className="p-6 bg-indigo-50/50 rounded-3xl border border-indigo-100/50">
+               <h4 className="text-xs font-black text-indigo-900 uppercase tracking-widest mb-2 flex items-center gap-2">
+                 <MdCheckCircle className="text-indigo-600 text-lg" /> Pro Tip
+               </h4>
+               <p className="text-[11px] leading-relaxed text-indigo-700 font-medium">
+                 Ensure the banner is clean and professional to attract more applicants.
+               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="duration">Duration *</Label>
-              <Input
-                id="duration"
-                value={formData.duration}
-                onChange={(e) => handleChange("duration", e.target.value)}
-                placeholder="e.g. 3 months"
-                required
-              />
+          {/* RIGHT: DETAILS SECTION */}
+          <div className="lg:col-span-8 space-y-8">
+            <div className="space-y-6">
+              
+              {/* Job Title */}
+              <div className="space-y-2">
+                <Label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                  <MdTitle className="text-indigo-500 text-lg" /> Job Title
+                </Label>
+                <Input
+                  value={formData.title}
+                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  placeholder="e.g. Full Stack Developer"
+                  required
+                  className="rounded-2xl h-14 border-gray-200 bg-white/70 shadow-sm font-bold text-lg focus:ring-2 focus:ring-indigo-100"
+                />
+              </div>
+
+              {/* Company & Location */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <MdBusiness className="text-indigo-500 text-lg"/> Company
+                  </Label>
+                  <Input
+                    value={formData.company}
+                    onChange={(e) => setFormData({...formData, company: e.target.value})}
+                    placeholder="Nirmatri"
+                    required
+                    className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <MdLocationOn className="text-indigo-500 text-lg"/> Location
+                  </Label>
+                  <Input
+                    value={formData.location}
+                    onChange={(e) => setFormData({...formData, location: e.target.value})}
+                    placeholder="Remote / Mumbai"
+                    required
+                    className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Duration & Stipend */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <MdAccessTime className="text-indigo-500 text-lg"/> Duration
+                  </Label>
+                  <Input
+                    value={formData.duration}
+                    onChange={(e) => setFormData({...formData, duration: e.target.value})}
+                    placeholder="3 Months"
+                    required
+                    className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <MdCurrencyRupee className="text-indigo-500 text-lg"/> Stipend
+                  </Label>
+                  <Input
+                    value={formData.stipend}
+                    onChange={(e) => setFormData({...formData, stipend: e.target.value})}
+                    placeholder="15000 / Unpaid"
+                    required
+                    className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
+                  />
+                </div>
+              </div>
+
+              {/* About Role */}
+              <div className="space-y-2">
+                <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                  <MdDescription className="text-indigo-500 text-lg" /> About the Role
+                </Label>
+                <Textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  placeholder="Describe the responsibilities..."
+                  rows={4}
+                  required
+                  className="rounded-2xl border-gray-200 bg-white/70 focus:bg-white resize-none shadow-sm font-medium p-4"
+                />
+              </div>
+
+              {/* Requirements */}
+              <div className="space-y-2">
+                <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                  <MdList className="text-indigo-500 text-lg" /> Requirements
+                </Label>
+                <Textarea
+                  value={formData.requirements}
+                  onChange={(e) => setFormData({...formData, requirements: e.target.value})}
+                  placeholder="What skills are you looking for?"
+                  rows={3}
+                  required
+                  className="rounded-2xl border-gray-200 bg-white/70 focus:bg-white resize-none shadow-sm font-medium p-4"
+                />
+              </div>
+
+              {/* STATUS & SUBMIT */}
+              <div className="flex flex-col sm:flex-row items-center gap-6 pt-6">
+                <div className="w-full sm:w-40 space-y-2">
+                  <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <MdSettings className="text-indigo-500 text-lg" /> Status
+                  </Label>
+                  <Select
+                    value={formData.status}
+                    onValueChange={(val: any) => setFormData({...formData, status: val})}
+                  >
+                    <SelectTrigger className="rounded-2xl h-12 border-gray-200 bg-white shadow-sm font-bold">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-gray-100">
+                      <SelectItem value="Active" className="font-bold text-green-600">Active</SelectItem>
+                      <SelectItem value="Inactive" className="font-bold text-gray-400">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex-1 w-full flex gap-3 mt-auto">
+                  <Button
+                    disabled={isSubmitting}
+                    type="submit"
+                    className="flex-1 h-12 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-indigo-100 transition-all active:scale-95"
+                  >
+                    {isSubmitting ? "Processing..." : isEditMode ? "Update Now" : "Publish Now"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="h-12 px-8 rounded-2xl border-gray-200 bg-white font-bold text-[10px] uppercase tracking-widest shadow-sm"
+                    onClick={() => navigate.push("/admin/internships")}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div>
-              <Label htmlFor="stipend">Stipend *</Label>
-              <Input
-                id="stipend"
-                value={formData.stipend}
-                onChange={(e) => handleChange("stipend", e.target.value)}
-                placeholder="e.g. ₹15,000/month"
-                required
-              />
-            </div>
           </div>
-
-          <div>
-            <Label htmlFor="description">Description *</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleChange("description", e.target.value)}
-              placeholder="Describe the internship role and responsibilities..."
-              rows={4}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="requirements">Requirements *</Label>
-            <Textarea
-              id="requirements"
-              value={formData.requirements}
-              onChange={(e) => handleChange("requirements", e.target.value)}
-              placeholder="List the skills and qualifications required..."
-              rows={4}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="status">Status *</Label>
-            <Select
-              value={formData.status}
-              onValueChange={(value) => handleChange("status", value)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Active">Active</SelectItem>
-                <SelectItem value="Inactive">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex gap-4 pt-4">
-            <Button
-              type="submit"
-              className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-            >
-              {isEdit ? "Update Internship" : "Add Internship"}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate.push("/admin/internships")}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
-      </motion.div>
+        </motion.form>
+      </div>
     </div>
   );
 }
