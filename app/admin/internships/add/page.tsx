@@ -126,7 +126,6 @@ export default function AddInternship({
       let imageUrl = formData.imageUrl || null;
       let public_id = formData.public_id || null;
 
-      // ✅ STEP 1: Upload image if exists
       if (image) {
         const formDataImg = new FormData();
         formDataImg.append("image", image);
@@ -143,47 +142,27 @@ export default function AddInternship({
         public_id = data.publicId;
       }
 
-      // ✅ STEP 2: Prepare final data
-      const finalData = {
-        ...formData,
-        imageUrl,
-        public_id,
-        mentorNames: selectedMentors,
-      };
+      const finalData = { ...formData, imageUrl, public_id };
 
       let res;
-
-      // ✅ STEP 3: CREATE
       if (!isEditMode) {
         res = await fetch(`${API}/upload/internship/`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(finalData),
         });
-
         if (!res.ok) throw new Error("Create failed");
-
         toast.success("Internship created!");
-      }
-
-      // ✅ STEP 4: UPDATE
-      else {
+      } else {
         res = await fetch(`${API}/upload/update_internship/${internshipId}/`, {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(finalData),
         });
-
         if (!res.ok) throw new Error("Update failed");
-
         toast.success("Internship updated!");
       }
 
-      // ✅ Redirect (common for both)
       navigate.push("/admin/internships");
     } catch (error) {
       console.error(error);
@@ -214,7 +193,7 @@ export default function AddInternship({
               {isEditMode ? "Edit Opportunity" : "New Internship"}
             </h1>
             <p className="text-gray-400 font-medium mt-2">
-              Fill in the requirements and manage your listings.
+               Post a new internship with detailed requirements.
             </p>
           </motion.div>
         </div>
@@ -228,7 +207,7 @@ export default function AddInternship({
           {/* LEFT: IMAGE SECTION */}
           <div className="lg:col-span-4 space-y-4">
             <Label className="text-[10px] uppercase tracking-[0.2em] font-black text-gray-400 ml-1 flex items-center gap-2">
-              <MdImage className="text-indigo-500 text-sm" /> Banner Image
+              <MdImage className="text-indigo-500 text-base" /> Banner Image
             </Label>
             <div className="relative group overflow-hidden rounded-[32px] border-2 border-dashed border-gray-200 bg-white/50 hover:bg-white hover:border-indigo-200 transition-all cursor-pointer aspect-[4/5] flex items-center justify-center shadow-sm">
               <input
@@ -258,20 +237,19 @@ export default function AddInternship({
                 ) : (
                   <div className="text-center p-6 text-gray-400">
                     <MdCloudUpload className="text-4xl mx-auto mb-2 group-hover:scale-110 transition-transform text-indigo-400" />
-                    <p className="font-bold text-sm">Upload Banner</p>
+                    <p className="font-bold text-sm text-gray-600">Upload Banner</p>
                   </div>
                 )}
               </label>
             </div>
 
             <div className="p-6 bg-indigo-50/50 rounded-3xl border border-indigo-100/50">
-              <h4 className="text-xs font-black text-indigo-900 uppercase tracking-widest mb-2 flex items-center gap-2">
-                <MdCheckCircle className="text-indigo-600 text-lg" /> Pro Tip
-              </h4>
-              <p className="text-[11px] leading-relaxed text-indigo-700 font-medium">
-                Ensure the banner is clean and professional to attract more
-                applicants.
-              </p>
+               <h4 className="text-xs font-black text-indigo-900 uppercase tracking-widest mb-2 flex items-center gap-2">
+                 <MdCheckCircle className="text-indigo-600 text-lg" /> Pro Tip
+               </h4>
+               <p className="text-[11px] leading-relaxed text-indigo-700 font-medium">
+                 Use a high-quality banner image to make the posting look more professional.
+               </p>
             </div>
           </div>
 
@@ -290,7 +268,7 @@ export default function AddInternship({
                   }
                   placeholder="e.g. Full Stack Developer"
                   required
-                  className="rounded-2xl h-14 border-gray-200 bg-white/70 shadow-sm font-bold text-lg focus:ring-2 focus:ring-indigo-100"
+                  className="rounded-2xl h-14 border-gray-200 bg-white/70 shadow-sm font-bold text-lg focus:ring-2 focus:ring-indigo-100 transition-all"
                 />
               </div>
 
@@ -302,10 +280,8 @@ export default function AddInternship({
                   </Label>
                   <Input
                     value={formData.company}
-                    onChange={(e) =>
-                      setFormData({ ...formData, company: e.target.value })
-                    }
-                    placeholder="eg., company name"
+                    onChange={(e) => setFormData({...formData, company: e.target.value})}
+                    placeholder="Company Name"
                     required
                     className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
                   />
@@ -317,16 +293,39 @@ export default function AddInternship({
                   </Label>
                   <Input
                     value={formData.location}
-                    onChange={(e) =>
-                      setFormData({ ...formData, location: e.target.value })
-                    }
-                    placeholder="Remote / Mumbai"
+                    onChange={(e) => setFormData({...formData, location: e.target.value})}
+                    placeholder="Remote / City"
                     required
                     className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
                   />
                 </div>
 
-                {/* ✅ Selected Mentors */}
+              {/* Duration & Stipend */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <MdAccessTime className="text-indigo-500 text-lg"/> Duration
+                  </Label>
+                  <Input
+                    value={formData.duration}
+                    onChange={(e) => setFormData({...formData, duration: e.target.value})}
+                    placeholder="e.g. 6 Months"
+                    required
+                    className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                    <MdCurrencyRupee className="text-indigo-500 text-lg"/> Stipend
+                  </Label>
+                  <Input
+                    value={formData.stipend}
+                    onChange={(e) => setFormData({...formData, stipend: e.target.value})}
+                    placeholder="Amount / Unpaid"
+                    required
+                    className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
+                  />
+                </div>
               </div>
             </div>
 
@@ -336,12 +335,11 @@ export default function AddInternship({
                 <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
                   <MdAccessTime className="text-indigo-500 text-lg" /> Duration
                 </Label>
-                <Input
-                  value={formData.duration}
-                  onChange={(e) =>
-                    setFormData({ ...formData, duration: e.target.value })
-                  }
-                  placeholder="3 Months"
+                <Textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  placeholder="Describe the responsibilities and role details..."
+                  rows={4}
                   required
                   className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
                 />
@@ -351,12 +349,11 @@ export default function AddInternship({
                   <MdCurrencyRupee className="text-indigo-500 text-lg" />{" "}
                   Stipend
                 </Label>
-                <Input
-                  value={formData.stipend}
-                  onChange={(e) =>
-                    setFormData({ ...formData, stipend: e.target.value })
-                  }
-                  placeholder="15000 / Unpaid"
+                <Textarea
+                  value={formData.requirements}
+                  onChange={(e) => setFormData({...formData, requirements: e.target.value})}
+                  placeholder="Skills, qualifications, and other requirements..."
+                  rows={3}
                   required
                   className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
                 />
@@ -538,7 +535,7 @@ export default function AddInternship({
                   <Button
                     disabled={isSubmitting}
                     type="submit"
-                    className="flex-1 h-12 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-indigo-100 transition-all active:scale-95"
+                    className="flex-1 h-12 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-widest text-[11px] shadow-xl shadow-indigo-100 transition-all active:scale-95"
                   >
                     {isSubmitting
                       ? "Processing..."
@@ -549,7 +546,7 @@ export default function AddInternship({
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-12 px-8 rounded-2xl border-gray-200 bg-white font-bold text-[10px] uppercase tracking-widest shadow-sm"
+                    className="h-12 px-8 rounded-2xl border-gray-200 bg-white font-bold text-[11px] uppercase tracking-widest shadow-sm"
                     onClick={() => navigate.push("/admin/internships")}
                   >
                     Cancel
