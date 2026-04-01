@@ -133,12 +133,6 @@ export default function Mentors() {
                     {/* FOOTER */}
                     <div className="mt-4 pt-2.5 border-t border-gray-50 flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
-                        <div className="flex items-center gap-0.5 text-yellow-500 font-bold text-xs">
-                          <MdStar className="text-sm" /> {mentor.rating || "0.0"}
-                        </div>
-                        <div className="text-gray-400 font-semibold text-[10px]">
-                           {mentor.totalStudents || 0} Studs
-                        </div>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <Link href={`/admin/mentors/edit/${mentor._id}`}>

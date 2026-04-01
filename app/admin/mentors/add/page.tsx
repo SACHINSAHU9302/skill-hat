@@ -105,11 +105,6 @@ export default function AddMentor({
       formDataToSend.append("expertise", formData.expertise);
       formDataToSend.append("bio", formData.bio);
       formDataToSend.append("experience", formData.experience);
-      formDataToSend.append("rating", String(formData.rating));
-      formDataToSend.append(
-        "totalStudents",
-        String(formData.totalStudents)
-      );
       formDataToSend.append("status", formData.status);
 
       // 📸 Image
@@ -299,32 +294,8 @@ export default function AddMentor({
               </div>
 
               {/* Stats & Status */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-                <div className="space-y-2">
-                  <Label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <MdBarChart className="text-indigo-500 text-lg" /> Rating (0-5)
-                  </Label>
-                  <Input
-                    name="rating"
-                    type="number"
-                    step="0.1"
-                    value={formData.rating}
-                    onChange={handleChange}
-                    className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm font-bold"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <MdGroup className="text-indigo-500 text-lg" /> Students
-                  </Label>
-                  <Input
-                    name="totalStudents"
-                    type="number"
-                    value={formData.totalStudents}
-                    onChange={handleChange}
-                    className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm font-bold"
-                  />
-                </div>
+              <div className="grid grid-cols-1  gap-6 items-end">
+
                 <div className="space-y-2">
                   <Label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
                     <MdSettings className="text-indigo-500 text-lg" /> Status
