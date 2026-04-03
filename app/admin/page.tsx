@@ -150,9 +150,7 @@ export default function Dashboard() {
                     <h4 className="text-xs md:text-sm font-bold text-gray-800 truncate leading-tight">{item.name}</h4>
                     <p className="text-[9px] md:text-[10px] text-gray-400 truncate mt-0.5">{item.expertise?.split(',')[0]}</p>
                   </div>
-                  <div className="flex items-center gap-0.5 text-[10px] font-black text-yellow-500 bg-yellow-50 px-2 py-1 rounded-lg">
-                    <MdStar /> {item.rating || "0"}
-                  </div>
+                  
                 </div>
               ))
             }
