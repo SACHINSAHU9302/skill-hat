@@ -112,7 +112,7 @@ export default function Mentors() {
             title="Add Mentor"
             className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-2xl shadow-md transition-colors hover:bg-indigo-700 active:scale-95 font-bold text-[10px] uppercase tracking-widest"
           >
-            <MdAdd className="text-lg" />
+            <MdAdd className="text-md" />
             <span>Add Mentor</span>
           </button>
         </Link>

@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    qualities: [75, 90],
     remotePatterns: [
       {
         protocol: 'https',
@@ -15,6 +16,12 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'picsum.photos',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: "/dszwlduhs/image/upload/**",
+      },
+      
     ],
   },
 };

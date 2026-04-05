@@ -4,37 +4,87 @@ import React, { useState, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { Mail, Lock, ChevronRight, AlertCircle } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  ChevronRight,
+  AlertCircle,
+  Eye,
+  EyeOff,
+  Loader2,           // ← React icon spinner (Lucide)
+} from "lucide-react";
 import { useAuth } from "@/src/context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+
   const { setUser } = useAuth();
   const router = useRouter();
+
+  const isValidEmail = (email: string): boolean => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccess("");
+
+    if (!email.trim()) {
+      setError("Email address is required");
+      setLoading(false);
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address");
+      setLoading(false);
+      return;
+    }
+    if (!password.trim()) {
+      setError("Password is required");
+      setLoading(false);
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      setLoading(false);
+      return;
+    }
 
     try {
-      // Simulate API call
       setTimeout(() => {
         const mockUser = {
           _id: "u1",
           name: email.split("@")[0],
           email: email,
-          role: email.includes("admin") ? "admin" : "user"
+          role: email.includes("admin") ? "admin" : "user",
         };
+
         localStorage.setItem("token", "mock-token");
         localStorage.setItem("user", JSON.stringify(mockUser));
+
+        if (rememberMe) {
+          localStorage.setItem("rememberMe", "true");
+        } else {
+          localStorage.removeItem("rememberMe");
+        }
+
         setUser(mockUser as any);
-        router.push("/");
+        setSuccess("Login successfully");
+
+        setTimeout(() => {
+          router.push("/");
+        }, 800);
+
         setLoading(false);
-      }, 1000);
+      }, 1200);
     } catch (err) {
       setError("Something went wrong. Please try again.");
       setLoading(false);
@@ -42,74 +92,154 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center px-4 bg-gray-50">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full bg-white rounded-3xl shadow-xl shadow-gray-200/50 p-8 md:p-12 border border-gray-100"
-      >
-        <div className="text-center mb-10">
+    <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-6 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-zinc-950 dark:via-zinc-900 dark:to-slate-950 transition-colors">
+      <div className="absolute inset-0 bg-[radial-gradient(#3b82f630_1px,transparent_1px)] bg-[length:40px_40px] opacity-30 pointer-events-none dark:opacity-10" />
 
-          <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
-          <p className="text-gray-500 mt-2">Log in to your NexusAcademy account</p>
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="max-w-md w-full bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl shadow-slate-200/70 dark:shadow-black/40 border border-slate-100 dark:border-zinc-700 p-8 md:p-12 backdrop-blur-xl"
+      >
+        {/* Header */}
+        <div className="text-center mb-10">
+         
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+            Welcome back
+          </h1>
+          <p className="mt-2 text-slate-500 dark:text-slate-400">
+            Sign in to your NexusAcademy account
+          </p>
         </div>
 
+        {/* Error */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center space-x-3 text-red-600 text-sm">
-            <AlertCircle size={18} />
-            <span>{error}</span>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 flex items-center gap-3 rounded-2xl bg-red-50 dark:bg-red-950/60 border border-red-100 dark:border-red-900 p-4 text-sm text-red-700 dark:text-red-400"
+          >
+            <AlertCircle size={20} className="shrink-0" />
+            <span className="font-medium">{error}</span>
+          </motion.div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Success */}
+        {success && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 flex items-center gap-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-100 dark:border-emerald-900 p-4 text-sm text-emerald-700 dark:text-emerald-400"
+          >
+            <div className="h-5 w-5 rounded-full bg-emerald-500 flex items-center justify-center">
+              <span className="text-white text-[10px] leading-none">✓</span>
+            </div>
+            <span className="font-medium">{success}</span>
+          </motion.div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+          {/* Email */}
           <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700 ml-1">Email Address</label>
+            <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Email address
+            </label>
             <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <input 
-                type="email" 
+              <Mail className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" size={20} />
+              <input
+                id="email"
+                type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-12 pr-4 py-4 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
-                placeholder="name@company.com"
+                className="w-full rounded-2xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-12 py-4 text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all outline-none"
+                placeholder="you@company.com"
               />
             </div>
           </div>
 
+          {/* Password */}
           <div className="space-y-2">
-            <div className="flex justify-between items-center ml-1">
-              <label className="text-sm font-bold text-gray-700">Password</label>
-              <a href="#" className="text-xs font-bold text-blue-600 hover:text-blue-700">Forgot password?</a>
+            <div className="flex items-center justify-between">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                Password
+              </label>
+              <Link
+                href="/auth/forgot-password"
+                className="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+              >
+                Forgot password?
+              </Link>
             </div>
             <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-              <input 
-                type="password" 
+              <Lock className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" size={20} />
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-12 pr-4 py-4 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
+                className="w-full rounded-2xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 px-12 py-4 pr-12 text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 transition-all outline-none"
                 placeholder="••••••••"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
           </div>
 
-          <button 
+          {/* Remember me */}
+          <div className="flex items-center">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+              <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                Remember me
+              </span>
+            </label>
+          </div>
+
+          {/* Login Button with React Icon Spinner */}
+          <motion.button
+            whileTap={{ scale: 0.97 }}
             type="submit"
             disabled={loading}
-            className="w-full bg-[#2563EB] text-white py-4 rounded-2xl font-bold text-lg hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex items-center justify-center group disabled:opacity-70"
+            className="group relative w-full flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {loading ? "Logging in..." : "Sign In"}
-            {!loading && <ChevronRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />}
-          </button>
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin h-5 w-5 text-white" />   {/* ← Clean React icon spinner */}
+                <span>Signing in...</span>
+              </>
+            ) : (
+              <>
+                Sign in
+                <ChevronRight size={22} className="transition-transform group-hover:translate-x-0.5" />
+              </>
+            )}
+          </motion.button>
         </form>
 
-        <div className="mt-10 text-center">
-          <p className="text-gray-500 text-sm">
-            Don't have an account?{" "}
-            <Link href="/register" className="text-blue-600 font-bold hover:text-blue-700">Create account</Link>
-          </p>
+        {/* Footer */}
+        <div className="mt-10 text-center text-sm">
+          <span className="text-slate-500 dark:text-slate-400">
+            Don&apos;t have an account?{" "}
+          </span>
+          <Link
+            href="/register"
+            className="font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+          >
+            Create a free account
+          </Link>
         </div>
       </motion.div>
     </div>

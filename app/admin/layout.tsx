@@ -72,7 +72,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           )}
         </button>
 
-        <main className="p-6 pt-20 min-h-screen">
+        <main className="p-6 pt-0 min-h-screen">
           {children}
         </main>
       </div>

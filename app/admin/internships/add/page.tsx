@@ -142,7 +142,13 @@ export default function AddInternship({
         public_id = data.publicId;
       }
 
-      const finalData = { ...formData, imageUrl, public_id };
+      const finalData = { 
+        ...formData,
+         imageUrl,
+         public_id,
+         mentorNames: selectedMentors,
+
+       };
 
       let res;
       if (!isEditMode) {
@@ -330,36 +336,6 @@ export default function AddInternship({
             </div>
              </div>
 
-            {/* Duration & Stipend */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                  <MdAccessTime className="text-indigo-500 text-lg" /> Duration
-                </Label>
-                <Textarea
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                  placeholder="Describe the responsibilities and role details..."
-                  rows={4}
-                  required
-                  className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs font-black text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                  <MdCurrencyRupee className="text-indigo-500 text-lg" />{" "}
-                  Stipend
-                </Label>
-                <Textarea
-                  value={formData.requirements}
-                  onChange={(e) => setFormData({...formData, requirements: e.target.value})}
-                  placeholder="Skills, qualifications, and other requirements..."
-                  rows={3}
-                  required
-                  className="rounded-2xl h-12 border-gray-200 bg-white/70 shadow-sm"
-                />
-              </div>
-            </div>
 
             {/* About Role */}
             <div className="space-y-2">

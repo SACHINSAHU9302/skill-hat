@@ -3,8 +3,20 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Loader2, 
+  MapPin, 
+  Clock, 
+  IndianRupee, 
+  Users, 
+  Award, 
+  Target, 
+  Calendar,
+  Briefcase 
+} from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_APP_URL;
 
@@ -15,30 +27,32 @@ export default function InternshipDetail() {
   const [internship, setInternship] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
+  // Fallback banner agar imageUrl na ho
+  const FALLBACK_BANNER = "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1920";
+
   function getYouTubeId(url?: string) {
-    if (!url) return ""; // ✅ prevent crash
-
+    if (!url) return "";
     const regExp = /(?:youtube\.com\/.*v=|youtu\.be\/)([^&]+)/;
-
     const match = url.match(regExp);
     return match ? match[1] : "";
   }
-  // ✅ FETCH DATA
+
   useEffect(() => {
-    if (!internshipId) return;
+    if (!internshipId) {
+      setLoading(false);
+      return;
+    }
 
     const fetchInternship = async () => {
       try {
         const res = await fetch(`${API}/upload/internship/${internshipId}/`);
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch internship");
-        }
-
+        if (!res.ok) throw new Error("Failed to fetch");
+        
         const data = await res.json();
         setInternship(data);
       } catch (err) {
-        console.error("FETCH ERROR:", err);
+        console.error("API Error:", err);
+        // Optional: You can set demo data here if needed
       } finally {
         setLoading(false);
       }
@@ -47,157 +61,224 @@ export default function InternshipDetail() {
     fetchInternship();
   }, [internshipId]);
 
-  // 🌀 LOADING
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-indigo-600" size={40} />
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Loader2 className="animate-spin text-indigo-600" size={48} />
       </div>
     );
   }
 
-  // ❌ NOT FOUND
   if (!internship) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-xl font-bold">
+      <div className="min-h-screen flex items-center justify-center text-2xl font-semibold text-gray-500">
         Internship not found
       </div>
     );
   }
 
+  const videoId = getYouTubeId(internship.youtube);
+  
+  // Use imageUrl from API, fallback to unsplash if not available
+  const bannerImage = internship.imageUrl || FALLBACK_BANNER;
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
-      {/* 🔷 HERO SECTION */}
-      <section className="bg-white border-b pt-24 pb-16">
-        <div className="max-w-6xl mx-auto px-4">
-          {/* Back */}
+      {/* Hero Section - Using API imageUrl as Cover */}
+      <section className="relative min-h-[600px] flex items-center text-white pt-24 pb-32 overflow-hidden bg-slate-900">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src={bannerImage}
+            alt={`${internship.title} Banner`}
+            fill
+            priority
+            className="object-cover object-center"
+            quality={90}
+          />
+          {/* Dark Overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/85 to-transparent" />
+          <div className="absolute inset-0 bg-black/40" />
+        </div>
+
+        <div className="max-w-6xl mx-auto px-6 relative z-10 w-full">
           <Link
             href="/internships"
-            className="flex items-center text-sm text-gray-500 hover:text-indigo-600 mb-6"
+            className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-10 transition-colors group"
           >
-            ← Back to internships
+            <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+            <span>Back to Internships</span>
           </Link>
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* LEFT CONTENT */}
-            <div className="space-y-6">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
+            <div className="space-y-8">
+              <div className="inline-flex items-center gap-2 bg-indigo-600/40 border border-indigo-400/30 text-white text-sm px-4 py-1.5 rounded-full mb-6 backdrop-blur-md">
+                <Briefcase size={18} />
+                <span className="font-medium">Hiring Now</span>
+              </div>
+              
+              <h1 className="text-5xl md:text-7xl font-bold leading-tight tracking-tighter">
                 {internship.title}
               </h1>
+              <p className="text-2xl text-indigo-100 font-medium">{internship.company}</p>
 
-              <p className="text-gray-600 text-lg leading-relaxed">
-                {internship.description}
-              </p>
-
-              {/* INFO BOX */}
-              <div className="bg-gray-50 rounded-2xl p-5 space-y-2 border">
-                <p>
-                  <strong>Company:</strong> {internship.company}
-                </p>
-                <p>
-                  <strong>Location:</strong> {internship.location}
-                </p>
-                <p>
-                  <strong>Duration:</strong> {internship.duration}
-                </p>
-
-                <p className="text-indigo-600 font-bold text-lg">
-                  {internship.stipend}
-                </p>
-              </div>
-
-              {/* CTA */}
-              <div className="flex gap-4 pt-2">
-                <button className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition">
-                  Enroll Now
-                </button>
-              </div>
-            </div>
-
-            {/* RIGHT MEDIA */}
-            <div className="w-full">
-              {(() => {
-                const videoId = getYouTubeId(internship.youtube);
-
-                return videoId ? (
-                  <div className="aspect-video rounded-3xl overflow-hidden shadow-xl">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${videoId}`}
-                      className="w-full h-full"
-                      allowFullScreen
-                    />
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {[
+                  { icon: <MapPin size={24} />, label: "LOCATION", value: internship.location },
+                  { icon: <Clock size={24} />, label: "DURATION", value: internship.duration },
+                  { icon: <IndianRupee size={24} />, label: "STIPEND", value: `₹${internship.stipend}` },
+                ].map((item, i) => (
+                  <div key={i} className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6">
+                    <div className="text-indigo-300 mb-3">{item.icon}</div>
+                    <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{item.label}</p>
+                    <p className="font-semibold text-xl mt-1 text-white">{item.value}</p>
                   </div>
-                ) : (
-                  <img
-                    src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
-                    className="rounded-3xl cursor-pointer"
-                  />
-                );
-              })()}
+                ))}
+              </div>
+
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-12 py-5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-lg rounded-2xl shadow-lg flex items-center gap-3 transition-all"
+              >
+                <Target size={22} />
+                Apply Now
+              </motion.button>
             </div>
+
+            {/* Video Section */}
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/20"
+            >
+              {videoId ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
+                  className="w-full aspect-video"
+                  allowFullScreen
+                />
+              ) : (
+                <div className="aspect-video bg-slate-800 flex items-center justify-center">
+                  <p className="text-white/60">Video preview coming soon</p>
+                </div>
+              )}
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* 🔷 DETAILS SECTION */}
-      <section className="max-w-6xl mx-auto px-4 py-16 space-y-10">
-        {/* REQUIREMENTS */}
-        <div className="bg-white rounded-3xl p-8 shadow-sm border">
-          <h2 className="text-2xl font-bold mb-4">Requirements</h2>
-
-          <p className="text-gray-600 whitespace-pre-line">
-            {internship.requirements}
-          </p>
-        </div>
-
-        {/* 🔥 MENTORS SECTION */}
-        <div className="bg-white rounded-3xl p-8 shadow-sm border">
-          <h2 className="text-2xl font-bold mb-6">Mentors</h2>
-
-          {internship.mentors && internship.mentors.length > 0 ? (
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {internship.mentors.map((mentor: any, index: number) => (
-                <motion.div
-                  key={index}
-                  whileHover={{ y: -5 }}
-                  className="p-5 border rounded-2xl bg-gray-50 hover:bg-white transition shadow-sm hover:shadow-md"
-                >
-                  <div className="flex items-center gap-4 mb-3">
-                    {/* Avatar */}
-                    <div className="w-12 h-12 rounded-full bg-indigo-500 text-white flex items-center justify-center font-bold text-lg">
-                      {mentor.name?.charAt(0)}
-                    </div>
-
-                    <div>
-                      <p className="font-semibold text-gray-800">
-                        {mentor.name}
-                      </p>
-                      <p className="text-xs text-gray-400">Mentor</p>
-                    </div>
-                  </div>
-
-                  {/* Expertise */}
-                  <p className="text-sm text-gray-500">
-                    {mentor.expertise || "Expert"}
-                  </p>
-                </motion.div>
-              ))}
+      {/* Main Content */}
+      <div className="max-w-6xl mx-auto px-6 -mt-10 relative z-20">
+        <div className="grid lg:grid-cols-12 gap-8">
+          
+          {/* Left Side */}
+          <div className="lg:col-span-7 space-y-8">
+            {/* About the Internship */}
+            <div className="bg-white rounded-3xl p-10 shadow-xl border border-gray-100">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="p-4 bg-indigo-100 rounded-2xl">
+                  <Award className="text-indigo-600" size={32} />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900">About the Internship</h2>
+              </div>
+              <div className="text-gray-600 text-[17px] leading-relaxed whitespace-pre-line">
+                {internship.description || "5-month Full Stack Developer Internship program."}
+              </div>
             </div>
-          ) : (
-            <p className="text-gray-400">No mentors assigned</p>
-          )}
-        </div>
 
-        {/* 🔥 CTA SECTION */}
-        <div className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white rounded-3xl p-8 shadow-lg">
-          <h2 className="text-2xl font-bold mb-3">Why join this internship?</h2>
+            {/* Requirements */}
+            <div className="bg-white rounded-3xl p-10 shadow-xl border border-gray-100">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="p-4 bg-indigo-100 rounded-2xl">
+                  <Target className="text-indigo-600" size={32} />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900">Requirements</h2>
+              </div>
+              <div className="text-gray-600 text-[17px] leading-relaxed whitespace-pre-line">
+                {internship.requirements || 
+                  `• HTML, CSS & JavaScript (ES6+)\n• Basic knowledge of React.js\n• Understanding of Git & GitHub\n• Problem-solving skills\n• Team work & communication\n• Minimum 15 hours/week commitment\n• Laptop with stable internet`}
+              </div>
+            </div>
+          </div>
 
-          <p className="text-white/90 text-sm">
-            Gain real-world experience, work with expert mentors, and build
-            projects that boost your career 🚀
-          </p>
+          {/* Right Sidebar */}
+          <div className="lg:col-span-5 space-y-8">
+            {/* Mentors */}
+            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+              <div className="flex items-center gap-4 mb-8">
+                <Users className="text-indigo-600" size={32} />
+                <h2 className="text-3xl font-bold text-gray-900">Mentors</h2>
+              </div>
+              <div className="space-y-6">
+                {internship.mentors && internship.mentors.length > 0 ? (
+                  internship.mentors.map((mentor: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex gap-4 p-5 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-all"
+                    >
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-2xl shadow-inner">
+                        {mentor.name?.[0] || "S"}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-xl text-gray-900">{mentor.name}</p>
+                        <p className="text-indigo-600 font-medium">{mentor.expertise}</p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500 italic">No mentors listed yet.</p>
+                )}
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="bg-gradient-to-br from-indigo-600 to-blue-700 text-white rounded-3xl p-10 shadow-2xl">
+              <Calendar size={48} className="mb-6 opacity-90" />
+              <h3 className="text-3xl font-bold mb-4">Launch Your Career</h3>
+              <p className="text-white/80 mb-8 leading-relaxed">
+                Apply today and get a chance to work with industry leaders.
+              </p>
+              <button className="w-full py-4 bg-white text-indigo-700 font-bold text-lg rounded-2xl hover:bg-indigo-50 transition-all">
+                Join Now
+              </button>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-gray-400 py-16 mt-20">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <p className="text-lg text-white/80">
+              Empowering the next generation of professionals through expert-led internships and industry-recognized certifications.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12">
+            <div>
+              <h4 className="text-white font-semibold mb-4">Platform</h4>
+              <ul className="space-y-2 text-sm">
+                <li>All Internship</li>
+                <li>Our Mentors</li>
+                <li>Verify Certificate</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Company</h4>
+              <ul className="space-y-2 text-sm">
+                <li>About Us</li>
+                <li>Contact</li>
+                <li>Privacy Policy</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-xs">
+            © 2026 Skillhat. All rights reserved.
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

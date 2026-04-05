@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion"; 
+import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
   Star,
@@ -17,15 +17,15 @@ import {
   MapPin,
   Target,
   IndianRupee,
-
 } from "lucide-react";
-import { FaStar, FaUserGraduate,} from "react-icons/fa";
+import { FaUserGraduate } from "react-icons/fa";
 import CountUp from "@/src/components/CountUp";
 import { useRouter } from "next/navigation";
+import { GraduationCap, FileText } from "lucide-react";
 
-const API = process.env.NEXT_PUBLIC_APP_URL
+const API = process.env.NEXT_PUBLIC_APP_URL;
 
-// Background Images Array for Hero Section
+// Background Images
 const heroImages = [
   "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=2000",
   "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2000",
@@ -40,8 +40,7 @@ const stats = [
   { label: "Hours of Content", value: 5, suffix: "k+", icon: Clock },
 ];
 
-// ================= INTERNSHIP CARD =================
-
+// ================= INTERNSHIP CARD (STRUCTURE UNCHANGED) =================
 const InternshipCard = ({ item }: any) => {
   const router = useRouter();
 
@@ -49,7 +48,7 @@ const InternshipCard = ({ item }: any) => {
     <motion.div
       whileHover={{ y: -8 }}
       onClick={() => router.push(`/internship/${item._id}`)}
-      className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 group cursor-pointer w-full max-w-[300px] sm:max-w-[340px] mx-auto"
+      className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 group cursor-pointer w-full"
     >
       {/* IMAGE */}
       <div className="relative h-40 sm:h-44 overflow-hidden rounded-t-2xl">
@@ -58,11 +57,7 @@ const InternshipCard = ({ item }: any) => {
           className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
           alt={item.title}
         />
-
-        {/* OVERLAY */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-
-        {/* STATUS */}
         <div className="absolute top-3 right-3 text-xs px-3 py-1 rounded-full bg-blue-600/90 text-white font-semibold backdrop-blur-md">
           {item.status}
         </div>
@@ -70,118 +65,96 @@ const InternshipCard = ({ item }: any) => {
 
       {/* CONTENT */}
       <div className="p-4 sm:p-5 space-y-3">
-
-        {/* TITLE */}
         <h3 className="text-sm sm:text-base font-bold text-gray-900 group-hover:text-blue-600 transition line-clamp-1">
           {item.title}
         </h3>
 
-        {/* COMPANY */}
         <p className="text-xs sm:text-sm text-gray-500">
           {item.company} • {item.location}
         </p>
 
-        {/* STATS WITH ICONS */}
         <div className="flex justify-between text-xs sm:text-sm text-gray-600 pt-2">
-
           <span className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-lg">
             <Clock size={14} className="text-blue-600" />
             {item.duration}
           </span>
-
           <span className="flex items-center gap-1 bg-purple-50 px-2 py-1 rounded-lg">
             <MapPin size={14} className="text-purple-600" />
             {item.location}
           </span>
-
         </div>
 
-        {/* FOOTER */}
         <div className="flex justify-between items-center pt-3 border-t">
-
-          <span className="text-base sm:text-lg font-bold text-blue-600">
-           <IndianRupee size={16} /> {item.stipend}
+          <span className="text-base sm:text-lg font-bold text-blue-600 flex items-center gap-1">
+            <IndianRupee size={16} /> {item.stipend}
           </span>
-
           <div className="flex items-center gap-1 text-xs sm:text-sm font-semibold text-gray-700 group-hover:text-blue-600">
-            <FaUserGraduate  size={14} />
+            <FaUserGraduate size={14} />
             Enroll
           </div>
-
         </div>
       </div>
     </motion.div>
   );
 };
 
-import {  GraduationCap, FileText } from "lucide-react";
-
+// ================= MENTOR CARD (STRUCTURE UNCHANGED) =================
 const MentorCard = ({ mentor }: any) => {
   return (
-    <motion.div
-      whileHover={{ y: -6 }}
-      className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-xl transition flex flex-col h-full w-full max-w-[260px] sm:max-w-[300px] mx-auto"
-    >
-
-      {/* IMAGE */}
+   <motion.div
+  whileHover={{ y: -6 }}
+  className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-2xl transition-all duration-300 group cursor-pointer w-full"
+>
       <img
         src={mentor.imageUrl || "/placeholder.jpg"}
         className="w-full h-32 sm:h-36 object-cover rounded-xl mb-3"
         alt={mentor.name}
       />
 
-      {/* NAME */}
-      <h3 className="font-bold text-gray-900 text-sm sm:text-base">
-        {mentor.name}
-      </h3>
+      <div className="px-3 pb-3">
+        <h3 className="font-bold text-gray-900 text-sm sm:text-base">
+          {mentor.name}
+        </h3>
 
-      {/* EXPERTISE */}
-      <p className="text-xs sm:text-sm text-blue-600 font-medium mb-2">
-        {mentor.expertise}
-      </p>
-
-      {/* 🎓 QUALIFICATION */}
-      <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-2">
-        <GraduationCap size={14} className="text-blue-500" />
-        <span className="line-clamp-1">
-          {mentor.qualification || "No qualification"}
-        </span>
-      </div>
-
-      {/* 📝 BIO */}
-      <div className="flex items-start gap-2 text-xs sm:text-sm text-gray-500 mb-3">
-        <FileText size={14} className="text-gray-400 mt-[2px]" />
-        <p className="line-clamp-2">
-          {mentor.bio || "No bio available"}
+        <p className="text-xs sm:text-sm text-blue-600 font-medium mb-2">
+          {mentor.expertise}
         </p>
-      </div>
 
-      {/* 👥 STUDENTS */}
-      <div className="flex justify-end items-center text-xs sm:text-sm mt-auto pt-3 border-t">
-        <span className="flex items-center gap-1 text-gray-500">
-          <Users size={14} />
-          {mentor.totalStudents || 0} Students
-        </span>
-      </div>
+        <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-2">
+          <GraduationCap size={14} className="text-blue-500" />
+          <span className="line-clamp-1">
+            {mentor.qualification || "No qualification"}
+          </span>
+        </div>
 
+        <div className="flex items-start gap-2 text-xs sm:text-sm text-gray-500 mb-3">
+          <FileText size={14} className="text-gray-400 mt-[2px]" />
+          <p className="line-clamp-2">
+            {mentor.bio || "No bio available"}
+          </p>
+        </div>
+
+        
+      </div>
     </motion.div>
   );
 };
-// ================= MAIN =================
+// ================= MAIN COMPONENT =================
 export default function Home() {
   const [internships, setInternships] = useState<any[]>([]);
   const [mentors, setMentors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [imgIndex, setImgIndex] = useState(0);
 
-  // Auto-change Background Image Logic
+  // Hero Background Auto Change
   useEffect(() => {
     const timer = setInterval(() => {
       setImgIndex((prev) => (prev + 1) % heroImages.length);
-    }, 5000); // Change image every 5 seconds
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
+  // Fetch Data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -191,6 +164,7 @@ export default function Home() {
         ]);
         const internshipsData = await iRes.json();
         const mentorsData = await mRes.json();
+
         setInternships(internshipsData.slice(0, 3));
         setMentors(mentorsData.slice(0, 3));
       } catch (err) {
@@ -203,12 +177,10 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="space-y-20 pb-20 bg-[#fcfcfc]">
+    <div className="space-y-16 md:space-y-20 pb-16 md:pb-20 bg-[#fcfcfc]">
 
-      {/* HERO SECTION WITH AUTO-SLIDER */}
+      {/* HERO SECTION - Responsive */}
       <section className="relative min-h-[85vh] flex items-center justify-center text-center px-4 overflow-hidden">
-        
-        {/* Background Slider */}
         <div className="absolute inset-0 z-0">
           <AnimatePresence mode="wait">
             <motion.img
@@ -219,50 +191,48 @@ export default function Home() {
               exit={{ opacity: 0 }}
               transition={{ duration: 1.5, ease: "easeInOut" }}
               className="absolute inset-0 w-full h-full object-cover"
-              alt="Background Slide"
+              alt="Background"
             />
           </AnimatePresence>
-          {/* Constant dark gradient overlay for text clarity */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[#fcfcfc]" />
         </div>
 
-        <div className="relative z-10 max-w-4xl mx-auto space-y-6">
-          <motion.div 
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6 px-4">
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-block px-4 py-1.5 bg-blue-600/20 backdrop-blur-md border border-blue-400/30 rounded-full text-blue-100 text-sm font-semibold mb-4"
+            className="inline-block px-4 py-1.5 bg-blue-600/20 backdrop-blur-md border border-blue-400/30 rounded-full text-blue-100 text-sm font-semibold"
           >
             Launch Your Future Career
           </motion.div>
-          
-          <motion.h1 
+
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-extrabold text-white leading-tight"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight"
           >
             Accelerate Your <br />
             <span className="text-blue-400">Career Growth</span>
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg md:text-xl text-gray-200 max-w-2xl mx-auto leading-relaxed"
+            className="text-base md:text-lg lg:text-xl text-gray-200 max-w-2xl mx-auto"
           >
-            Connect with top companies through our curated internships and learn from industry experts to build your professional profile.
+            Connect with top companies through our curated internships and learn from industry experts.
           </motion.p>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="pt-6"
           >
             <Link
               href="/internships"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-bold text-lg inline-flex items-center gap-2 transition-all shadow-xl shadow-blue-600/30 group"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-2xl font-bold text-base sm:text-lg inline-flex items-center gap-2 transition-all shadow-xl shadow-blue-600/30 group"
             >
               Explore Internships <ArrowRight className="group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -270,68 +240,64 @@ export default function Home() {
         </div>
       </section>
 
-      {/* STATS SECTION */}
-      <div className="max-w-7xl mx-auto px-4 -mt-32 relative z-20">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 bg-white p-8 md:p-10 rounded-[2rem] border shadow-xl">
+      {/* STATS SECTION - Responsive */}
+      <div className="max-w-7xl mx-auto px-4 -mt-20 sm:-mt-28 md:-mt-32 relative z-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 bg-white p-6 md:p-8 lg:p-10 rounded-[2rem] border shadow-xl">
           {stats.map((stat, i) => (
             <div key={i} className="text-center group">
               <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <stat.icon className="text-blue-600" size={24} />
               </div>
-              <div className="text-3xl font-black text-gray-900">
+              <div className="text-2xl md:text-3xl font-black text-gray-900">
                 <CountUp from={0} to={stat.value} duration={2} />
                 {stat.suffix}
               </div>
-              <p className="text-gray-500 font-medium text-sm mt-1">{stat.label}</p>
+              <p className="text-gray-500 font-medium text-xs md:text-sm mt-1">{stat.label}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* INTERNSHIPS SECTION */}
+      {/* FEATURED INTERNSHIPS SECTION */}
       <section className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-end mb-10">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-black text-gray-900">Featured Internships</h2>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-10 px-2">
+          <div className="space-y-1">
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900">Featured Internships</h2>
             <p className="text-gray-500">The most recent opportunities from top-tier companies.</p>
           </div>
-          <Link 
-            href="/internships" 
-            className="text-blue-600 font-bold hover:underline flex items-center gap-1"
+          <Link
+            href="/internships"
+            className="text-blue-600 font-bold hover:underline flex items-center gap-1 whitespace-nowrap"
           >
             View All Opportunities <ArrowRight size={18} />
           </Link>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        {/* Cards Container - Yeh part change kiya hai */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {loading
-            ? [1,2,3].map(i => (
-                <div key={i} className="h-80 bg-gray-100 animate-pulse rounded-3xl" />
-              ))
-            : internships.map(i => (
-                <InternshipCard key={i._id} item={i} />
-              ))}
+            ? [1, 2, 3].map((i) => (
+              <div
+                key={i}
+className="w-full h-72 sm:h-80 md:h-84 bg-gray-100 animate-pulse rounded-3xl"              />
+            ))
+            : internships.map((i) => (
+              <InternshipCard key={i._id} item={i} />
+            ))}
         </div>
       </section>
 
-     
-
-      {/* ================= NEW ATTRACTIVE SECTIONS START HERE ================= */}
-
-      {/* SUCCESS PATHWAY SECTION */}
-      <section className="py-20 bg-gray-50 border-y border-gray-100">
+      {/* HOW IT WORKS */}
+      <section className="py-16 md:py-20 bg-gray-50 border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="text-4xl font-black text-gray-900">How It Works</h2>
-            <p className="text-gray-500 max-w-xl mx-auto text-lg font-medium">Your simple 3-step journey to a successful career in tech.</p>
+          <div className="text-center mb-12 md:mb-16 space-y-3">
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900">How It Works</h2>
+            <p className="text-gray-500 max-w-xl mx-auto text-base md:text-lg">Your simple 3-step journey to a successful career in tech.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-12 relative">
-            {/* Step 1 */}
-            <motion.div 
-              whileHover={{ y: -10 }}
-              className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 text-center relative group"
-            >
+          <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+            {/* Steps remain same - only gap adjusted */}
+            <motion.div whileHover={{ y: -10 }} className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-gray-100 text-center group">
               <div className="w-20 h-20 bg-blue-600 text-white rounded-3xl flex items-center justify-center mx-auto mb-6 transform -rotate-6 group-hover:rotate-0 transition-transform shadow-lg shadow-blue-200">
                 <Search size={36} />
               </div>
@@ -339,11 +305,7 @@ export default function Home() {
               <p className="text-gray-500 leading-relaxed font-medium">Browse through verified internships and specialized courses that fit your goals.</p>
             </motion.div>
 
-            {/* Step 2 */}
-            <motion.div 
-              whileHover={{ y: -10 }}
-              className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 text-center relative group"
-            >
+            <motion.div whileHover={{ y: -10 }} className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-gray-100 text-center group">
               <div className="w-20 h-20 bg-purple-600 text-white rounded-3xl flex items-center justify-center mx-auto mb-6 transform rotate-6 group-hover:rotate-0 transition-transform shadow-lg shadow-purple-200">
                 <Zap size={36} />
               </div>
@@ -351,11 +313,7 @@ export default function Home() {
               <p className="text-gray-500 leading-relaxed font-medium">Learn from the best mentors and work on real-world projects to build your portfolio.</p>
             </motion.div>
 
-            {/* Step 3 */}
-            <motion.div 
-              whileHover={{ y: -10 }}
-              className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 text-center relative group"
-            >
+            <motion.div whileHover={{ y: -10 }} className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-gray-100 text-center group">
               <div className="w-20 h-20 bg-green-600 text-white rounded-3xl flex items-center justify-center mx-auto mb-6 transform -rotate-3 group-hover:rotate-0 transition-transform shadow-lg shadow-green-200">
                 <Briefcase size={36} />
               </div>
@@ -366,12 +324,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* WHY CHOOSE US SECTION */}
-      <section className="max-w-7xl mx-auto px-4 py-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+      {/* WHY CHOOSE US + IMAGE */}
+      <section className="max-w-7xl mx-auto px-4 py-12 md:py-16">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="space-y-8">
-            <h2 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight">
-              Why Students <br/> <span className="text-blue-600">Trust Our Platform</span>
+            <h2 className="text-3xl md:text-5xl font-black text-gray-900 leading-tight">
+              Why Students <br className="hidden md:block" /> <span className="text-blue-600">Trust Our Platform</span>
             </h2>
             <div className="space-y-6">
               {[
@@ -389,106 +347,88 @@ export default function Home() {
               ))}
             </div>
           </div>
-          
-          <div className="relative group">
-  <div className="rounded-[3rem] overflow-hidden shadow-2xl relative">
-    
-    {/* Image */}
-    <img
-      src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1200"
-      alt="Students learning"
-      className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-    />
 
-    {/* Overlay */}
-    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-
-    {/* Content */}
-    <div className="absolute bottom-0 p-8 text-white space-y-3">
-      <h3 className="text-4xl font-black">94%</h3>
-      <p className="text-lg font-semibold text-blue-400">
-        Student Success Rate
-      </p>
-      <p className="text-sm text-gray-200 max-w-xs">
-        Join 10,000+ learners building real-world skills and landing top internships.
-      </p>
-    </div>
-
-  </div>
-
+          <div className="relative group rounded-[3rem] overflow-hidden shadow-2xl">
+            <img
+              src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1200"
+              alt="Students learning"
+              className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="absolute bottom-0 p-8 text-white space-y-3">
+              <h3 className="text-4xl font-black">94%</h3>
+              <p className="text-lg font-semibold text-blue-400">Student Success Rate</p>
+              <p className="text-sm text-gray-200 max-w-xs">Join 10,000+ learners building real-world skills and landing top internships.</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* TRUSTED PARTNERS (LOGO STRIP) */}
+      {/* TRUSTED PARTNERS */}
       <section className="max-w-7xl mx-auto px-4 py-10">
-        <p className="text-center text-gray-400 font-bold uppercase tracking-[0.2em] text-sm mb-12">Trusted by students from</p>
-        <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
-           <h3 className="text-3xl font-black italic">GOOGLE</h3>
-           <h3 className="text-3xl font-black italic">MICROSOFT</h3>
-           <h3 className="text-3xl font-black italic">AMAZON</h3>
-           <h3 className="text-3xl font-black italic">NETFLIX</h3>
-           <h3 className="text-3xl font-black italic">ADOBE</h3>
+        <p className="text-center text-gray-400 font-bold uppercase tracking-[0.2em] text-sm mb-10">Trusted by students from</p>
+        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 lg:gap-24 opacity-40 hover:grayscale-0 transition-all">
+          <h3 className="text-2xl md:text-3xl font-black italic">GOOGLE</h3>
+          <h3 className="text-2xl md:text-3xl font-black italic">MICROSOFT</h3>
+          <h3 className="text-2xl md:text-3xl font-black italic">AMAZON</h3>
+          <h3 className="text-2xl md:text-3xl font-black italic">NETFLIX</h3>
+          <h3 className="text-2xl md:text-3xl font-black italic">ADOBE</h3>
         </div>
       </section>
-
-      {/* ================= NEW ATTRACTIVE SECTIONS END HERE ================= */}
 
       {/* CALL TO ACTION */}
-     <section className="max-w-5xl mx-auto px-4 pb-10">
-  <div className="bg-gray-900 text-white py-10 px-6 md:px-10 rounded-2xl text-center relative overflow-hidden">
-    
-    {/* subtle glow */}
-    <div className="absolute top-0 right-0 w-40 h-40 bg-blue-600/20 blur-[80px]" />
-
-    <div className="relative z-10 space-y-4">
-      
-      <h2 className="text-2xl md:text-4xl font-bold tracking-tight">
-        Ready to jumpstart your career?
-      </h2>
-
-      <p className="text-gray-400 max-w-md mx-auto text-sm md:text-base font-medium">
-        Join our community and get access to exclusive content.
-      </p>
-
-      <div className="pt-2">
-        <Link
-          href="/register"
-          className="bg-white text-black hover:bg-gray-100 px-6 py-3 rounded-xl font-semibold text-sm md:text-base transition-transform inline-block hover:scale-105"
-        >
-          Get Started
-        </Link>
-      </div>
-
-    </div>
-  </div>
-</section>
- {/* MENTORS SECTION */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-end mb-10">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-black text-gray-900">Top Mentors</h2>
-            <p className="text-gray-500">Learn directly from experts with real industry experience.</p>
+      <section className="max-w-5xl mx-auto px-4 pb-12">
+        <div className="bg-gray-900 text-white py-12 md:py-16 px-6 md:px-12 rounded-3xl text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-blue-600/20 blur-[80px]" />
+          <div className="relative z-10 space-y-4">
+            <h2 className="text-2xl md:text-4xl font-bold tracking-tight">Ready to jumpstart your career?</h2>
+            <p className="text-gray-400 max-w-md mx-auto text-sm md:text-base font-medium">Join our community and get access to exclusive content.</p>
+            <Link
+              href="/register"
+              className="bg-white text-black hover:bg-gray-100 px-8 py-3.5 rounded-2xl font-semibold text-base transition-transform inline-block hover:scale-105"
+            >
+              Get Started
+            </Link>
           </div>
-          <Link 
-            href="/mentors" 
-            className="text-blue-600 font-bold hover:underline flex items-center gap-1"
-          >
-            View All Mentors <ArrowRight size={18} />
-          </Link>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {loading
-            ? [1,2,3].map(i => (
-                <div key={i} className="h-60 bg-gray-100 animate-pulse rounded-2xl" />
-              ))
-            : mentors.map(m => (
-                <MentorCard key={m._id} mentor={m} />
-              ))}
         </div>
       </section>
 
+      {/* MENTORS SECTION - Cards Auto Adjust */}
+     <section className="max-w-7xl mx-auto px-4">
+  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-10 px-2">
+    <div className="space-y-1">
+      <h2 className="text-3xl md:text-4xl font-black text-gray-900">
+        Top Mentors
+      </h2>
+      <p className="text-gray-500">
+        Learn directly from experts with real industry experience.
+      </p>
+    </div>
+
+    {/* ✅ fixed link */}
+    <Link
+      href="/mentors"
+      className="text-blue-600 font-bold hover:underline flex items-center gap-1"
+    >
+      View All Mentors <ArrowRight size={18} />
+    </Link>
+  </div>
+
+  {/* ✅ FIXED GRID */}
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+    {loading
+      ? [1, 2, 3, 4].map((i) => (
+          // ✅ FIXED SKELETON
+          <div
+            key={i}
+            className="w-full aspect-[4/5] bg-gray-100 animate-pulse rounded-2xl"
+          />
+        ))
+      : mentors.map((m) => (
+          <MentorCard key={m._id} mentor={m} />
+        ))}
+  </div>
+</section>
     </div>
   );
 }

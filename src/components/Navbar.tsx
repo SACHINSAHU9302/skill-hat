@@ -16,7 +16,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const hideNavbarRouters = ["/mentors", "/login", "/register", "/admin"];
+  const hideNavbarRouters = ["/mentors", "/login", "/register", "/admin", "/auth/forgot-password", "/auth/reset-password", "/internships", "/internships/id"];
 
   const shouldHide =
     hideNavbarRouters.includes(pathname) ||
