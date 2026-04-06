@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { MdAdminPanelSettings } from "react-icons/md";
 
 const API = process.env.NEXT_PUBLIC_APP_URL;
 
@@ -114,8 +115,8 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 p-4">
       <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-10">
         <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-4">
-            🔐
+          <div className="mx-auto w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-8">
+            <MdAdminPanelSettings size={100}/>
           </div>
           <h1 className="text-3xl font-semibold text-gray-900">Admin Login</h1>
           <p className="text-gray-600 mt-2">Secure access to admin panel</p>

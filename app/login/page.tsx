@@ -108,7 +108,7 @@ export default function Login() {
             Welcome back
           </h1>
           <p className="mt-2 text-slate-500 dark:text-slate-400">
-            Sign in to your NexusAcademy account
+            Sign in to your Skillhat account
           </p>
         </div>
 

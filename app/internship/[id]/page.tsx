@@ -247,38 +247,7 @@ export default function InternshipDetail() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-16 mt-20">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-10">
-            <p className="text-lg text-white/80">
-              Empowering the next generation of professionals through expert-led internships and industry-recognized certifications.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-12">
-            <div>
-              <h4 className="text-white font-semibold mb-4">Platform</h4>
-              <ul className="space-y-2 text-sm">
-                <li>All Internship</li>
-                <li>Our Mentors</li>
-                <li>Verify Certificate</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm">
-                <li>About Us</li>
-                <li>Contact</li>
-                <li>Privacy Policy</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-xs">
-            © 2026 Skillhat. All rights reserved.
-          </div>
-        </div>
-      </footer>
+      
     </div>
   );
 }

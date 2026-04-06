@@ -7,6 +7,62 @@ import { User, LogOut, Menu, X, Search } from "lucide-react";
 import { useAuth } from "@/src/context/AuthContext";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import Fuse from "fuse.js";
+
+type RouteItem = {
+  path: string;
+  keywords: string[];
+};
+
+const routes: RouteItem[] = [
+  {
+    path: "/profile",
+    keywords: ["profile", "account", "my profile", "user"],
+  },
+  {
+    path: "/settings",
+    keywords: ["settings", "preferences", "config"],
+  },
+  {
+    path: "/mentors",
+    keywords: ["mentor", "mentors", "guide"],
+  },
+  {
+    path: "/contact",
+    keywords: ["contact", "contact us", "support", "help"],
+  },
+  {
+    path: "/internships",
+    keywords: ["internship", "internships", "jobs"],
+  },
+  {
+    path: "/",
+    keywords: ["dashboard", "home"],
+  },
+];
+
+const fuse = new Fuse(routes, {
+  keys: ["keywords"],
+  threshold: 0.3, // stricter = better accuracy
+  includeScore: true,
+});
+
+const normalize = (str: string) =>
+  str.toLowerCase().trim();
+
+const findRoute = (query: string): string | null => {
+  const q = normalize(query);
+
+  if (!q) return null;
+
+  const result = fuse.search(q);
+
+  if (result.length > 0 && result[0].score! < 0.4) {
+    return result[0].item.path;
+  }
+
+  return null;
+};
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -16,7 +72,16 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const hideNavbarRouters = ["/mentors", "/login", "/register", "/admin", "/auth/forgot-password", "/auth/reset-password", "/internships", "/internships/id"];
+  const hideNavbarRouters = [
+    "/mentors",
+    "/login",
+    "/register",
+    "/admin",
+    "/auth/forgot-password",
+    "/auth/reset-password",
+    "/internships",
+    "/internships/id",
+  ];
 
   const shouldHide =
     hideNavbarRouters.includes(pathname) ||
@@ -26,20 +91,28 @@ export default function Navbar() {
 
   if (shouldHide) return null;
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!search.trim()) return;
-    router.push(`/internships?search=${search}`);
-    setIsOpen(false);
-  };
+const handleSearch = (e: React.FormEvent) => {
+  e.preventDefault();
+
+  const query = search.trim();
+  if (!query) return;
+
+  const matchedRoute = findRoute(query);
+
+  if (matchedRoute) {
+    router.push(matchedRoute);
+  } else {
+    router.push(`/internships?search=${encodeURIComponent(query)}`);
+  }
+
+  setIsOpen(false);
+};
 
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md border-b border-gray-100 z-50">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        
         {/* 🔥 MAIN NAV */}
         <div className="flex items-center justify-between h-16 gap-2">
-
           {/* LOGO */}
           <Link href="/" className="flex items-center shrink-0">
             <div className="w-20 sm:w-24 h-10 bg-white rounded-xl flex items-center justify-center shadow-md">
@@ -57,36 +130,24 @@ export default function Navbar() {
           {/* 🔍 SEARCH (NOW ALWAYS VISIBLE) */}
           <form
             onSubmit={handleSearch}
-            className="flex-1 max-w-[180px] sm:max-w-sm md:max-w-md mx-2 relative"
+            className="flex-1 max-w-[280px] sm:max-w-sm md:max-w-md mx-2 relative"
           >
             <Search
               className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"
-              size={14}
+              size={20}
             />
             <input
               type="text"
               placeholder="Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-className="w-full pl-8 pr-2 py-1.5 sm:py-2 rounded-lg bg-white border border-gray-300 text-xs sm:text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"            />
+              className="w-full pl-8 pr-2 py-1.5 sm:py-2 rounded-lg bg-white border border-gray-300 text-xs sm:text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            />
           </form>
 
           {/* DESKTOP RIGHT */}
           <div className="hidden md:flex items-center gap-6 shrink-0">
-
-            <Link
-              href="/internships"
-              className="text-sm font-medium text-gray-600 hover:text-blue-600"
-            >
-              Internship
-            </Link>
-
-            <Link
-              href="/mentors"
-              className="text-sm font-medium text-gray-600 hover:text-blue-600"
-            >
-              Mentors
-            </Link>
+          
 
             {user ? (
               <div className="flex items-center gap-3">
@@ -99,7 +160,10 @@ className="w-full pl-8 pr-2 py-1.5 sm:py-2 rounded-lg bg-white border border-gra
                 </Link>
 
                 <button onClick={logout}>
-                  <LogOut size={20} className="text-gray-400 hover:text-red-500" />
+                  <LogOut
+                    size={20}
+                    className="text-gray-400 hover:text-red-500"
+                  />
                 </button>
               </div>
             ) : (
@@ -130,7 +194,10 @@ className="w-full pl-8 pr-2 py-1.5 sm:py-2 rounded-lg bg-white border border-gra
             exit={{ opacity: 0, y: -10 }}
             className="md:hidden bg-white border-b px-4 py-4 space-y-4"
           >
-            <Link href="/internships" className="block text-gray-600 font-medium">
+            <Link
+              href="/internships"
+              className="block text-gray-600 font-medium"
+            >
               Internship
             </Link>
 
@@ -140,10 +207,16 @@ className="w-full pl-8 pr-2 py-1.5 sm:py-2 rounded-lg bg-white border border-gra
 
             {user ? (
               <>
-                <Link href="/profile" className="block text-gray-600 font-medium">
+                <Link
+                  href="/profile"
+                  className="block text-gray-600 font-medium"
+                >
                   Profile
                 </Link>
-                <button onClick={logout} className="block text-red-500 font-medium">
+                <button
+                  onClick={logout}
+                  className="block text-red-500 font-medium"
+                >
                   Logout
                 </button>
               </>

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "Empowering the next generation of professionals through expert-led courses and industry-recognized certifications.",
   // Yahan icons add karein
   icons: {
-    icon: '/skillhat (2).jpeg',
+    icon: '/icon.png',
   },
 };
 

@@ -1,11 +1,8 @@
 "use client";
 import {
-  MdWork,
   MdPeople,
-  MdStar,
-  MdAttachMoney,
   MdOutlineArrowForward,
-  MdLocationOn,
+  MdOutlineFace,
 } from "react-icons/md";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -79,8 +76,8 @@ export default function Dashboard() {
         {[
           // { label: "Revenue", value: `₹${totalRevenue}`, icon: <MdAttachMoney />, color: "text-emerald-600 bg-emerald-50" },
           // { label: "Students", value: enrollments.length, icon: <MdPeople />, color: "text-blue-600 bg-blue-50" },
-          { label: "Internships", value: internships.length, icon: <MdWork />, color: "text-indigo-600 bg-indigo-50" },
-          { label: "Mentors", value: mentors.length, icon: <MdStar />, color: "text-orange-500 bg-orange-50" },
+          { label: "Internships", value: internships.length, icon: <MdOutlineFace />, color: "text-indigo-600 bg-indigo-50" },
+          { label: "Mentors", value: mentors.length, icon: <MdPeople />, color: "text-orange-500 bg-orange-50" },
         ].map((stat, i) => (
           <motion.div
             key={i}

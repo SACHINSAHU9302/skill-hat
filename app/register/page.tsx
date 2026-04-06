@@ -104,7 +104,7 @@ export default function Register() {
             Account Created!
           </h2>
           <p className="mt-3 text-slate-500 dark:text-slate-400">
-            Welcome to NexusAcademy. Redirecting you to login...
+            Welcome to Skillhat. Redirecting you to login...
           </p>
 
           <div className="mt-10 flex justify-center">
@@ -143,7 +143,7 @@ export default function Register() {
 
           <h2 className="text-5xl font-bold tracking-tighter mb-3">Learn smarter.</h2>
           <p className="text-2xl font-medium text-blue-100 max-w-xs">
-            Join 10,000+ students mastering the future at NexusAcademy
+            Join 10,000+ students mastering the future at Skillhat
           </p>
         </motion.div>
       </div>
@@ -162,7 +162,7 @@ export default function Register() {
               Get started
             </h1>
             <p className="mt-2 text-slate-500 dark:text-slate-400">
-              Create your NexusAcademy account
+              Create your Skillhat account
             </p>
           </div>
 

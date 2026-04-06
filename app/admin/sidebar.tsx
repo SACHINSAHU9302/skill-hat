@@ -108,17 +108,6 @@ export function Sidebar({ open, setOpen }: any) {
       </button>
 
       {/* User Bottom */}
-      <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center gap-3 px-4 py-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold shadow-md">
-            A
-          </div>
-          <div>
-            <p className="text-sm font-medium text-gray-900">Admin User</p>
-            <p className="text-xs text-gray-500">admin@example.com</p>
-          </div>
-        </div>
-      </div>
     </aside>
   );
 }
