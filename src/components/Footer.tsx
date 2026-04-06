@@ -1,13 +1,15 @@
 "use client";
+
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
 
 export default function Footer() {
   const pathname = usePathname();
 
-  const hideRoutes = ["/admin","/register", "/login", "/courses"];
+  const hideRoutes = ["/admin", "/register", "/login", "/courses"];
 
   const shouldHide =
     hideRoutes.includes(pathname) ||
@@ -25,17 +27,19 @@ export default function Footer() {
         {/* TOP GRID */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
 
-          {/* LEFT SECTION ✅ FIXED */}
+          {/* LEFT SECTION */}
           <div className="col-span-1 md:col-span-2">
 
             {/* LOGO + NAME */}
             <div className="flex items-center gap-3 mb-5">
-              <img
-                src="/skillhat (2).jpeg"
+              <Image
+                src="/logo1.png"
                 alt="Skillhat Logo"
-                className="h-10 w-auto object-contain"
+                width={160}
+                height={160}
+                className="w-auto h-10 object-contain"
+                priority
               />
-             
             </div>
 
             {/* DESCRIPTION */}
@@ -50,7 +54,7 @@ export default function Footer() {
             <h4 className="font-semibold text-gray-900 mb-4">Platform</h4>
             <ul className="space-y-2 text-sm text-gray-500">
               <li>
-                <Link href="/" className="hover:text-blue-600 transition-colors">
+                <Link href="/internships" className="hover:text-blue-600 transition-colors">
                   All Internship
                 </Link>
               </li>
@@ -60,7 +64,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/certificates" className="hover:text-blue-600 transition-colors">
+                <Link href="/company/certificates" className="hover:text-blue-600 transition-colors">
                   Verify Certificate
                 </Link>
               </li>
@@ -72,19 +76,20 @@ export default function Footer() {
             <h4 className="font-semibold text-gray-900 mb-4">Company</h4>
             <ul className="space-y-2 text-sm text-gray-500">
               <li>
-                <a href="#" className="hover:text-blue-600 transition-colors">
+                <Link href="/company/about" className="hover:text-blue-600 transition-colors">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-600 transition-colors">
+                <Link href="/company/contactus" className="hover:text-blue-600 transition-colors">
                   Contact
-                </a>
+                </Link>
               </li>
+              {/* 🔥 Privacy Policy ko Terms & Conditions page se link kiya */}
               <li>
-                <a href="/auth/terms-and-conditions" className="hover:text-blue-600 transition-colors">
-                  Privacy Policy
-                </a>
+                <Link href="/auth/terms-and-conditions" className="hover:text-blue-600 transition-colors">
+                  Terms & Conditions
+                </Link>
               </li>
             </ul>
           </div>
@@ -97,13 +102,28 @@ export default function Footer() {
 
           {/* SOCIAL ICONS */}
           <div className="flex items-center gap-5 mt-4 md:mt-0 text-lg">
-            <a href="#" className="hover:text-blue-600 transition-transform hover:scale-110">
+            <a 
+              href="https://twitter.com" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-600 transition-transform hover:scale-110"
+            >
               <FaTwitter />
             </a>
-            <a href="#" className="hover:text-blue-600 transition-transform hover:scale-110">
+            <a 
+              href="https://linkedin.com" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-600 transition-transform hover:scale-110"
+            >
               <FaLinkedin />
             </a>
-            <a href="#" className="hover:text-blue-600 transition-transform hover:scale-110">
+            <a 
+              href="https://instagram.com" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-600 transition-transform hover:scale-110"
+            >
               <FaInstagram />
             </a>
           </div>

@@ -29,17 +29,17 @@ export default function TermsAndConditions() {
       <div className="bg-white dark:bg-zinc-900 border-b border-slate-200 dark:border-zinc-800 sticky top-0 z-50">
         <div className="max-w-screen-2xl mx-auto px-6 py-5 flex items-center justify-between">
           <Link
-            href="/register"
+            href="/"
             className="flex items-center gap-3 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors"
           >
             <ArrowLeft size={20} />
-            <span className="hidden sm:inline">Back to Register</span>
+            <span className="hidden sm:inline">Back to Home</span>
           </Link>
 
 <div className="flex items-center gap-3">
           
             <Image
-              src="/logo.png"        
+              src="/logo1.png"        
               alt=" Logo"
               width={120}
               height={120}
@@ -50,7 +50,7 @@ export default function TermsAndConditions() {
           </div>
 
           <div className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-            Legal • Terms of Service
+            
           </div>
         </div>
       </div>
