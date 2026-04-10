@@ -16,6 +16,8 @@ import {
   Target,
   Calendar,
   Briefcase,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/src/context/AuthContext";
@@ -28,18 +30,41 @@ export default function InternshipDetail() {
 
   const [internship, setInternship] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isEnrolling, setIsEnrolling] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  // Modal States
+  const [showEnrollModal, setShowEnrollModal] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState<"success" | "info" | "error">(
+    "success",
+  );
 
   const router = useRouter();
   const { user } = useAuth();
 
+  const showModal = (
+    title: string,
+    message: string,
+    type: "success" | "info" | "error",
+  ) => {
+    setModalTitle(title);
+    setModalMessage(message);
+    setModalType(type);
+    setShowEnrollModal(true);
+  };
+
   const handleEnroll = async () => {
     if (!user) {
-      // 🔥 Not logged in → redirect
       router.push("/login");
       return;
     }
 
+    if (isEnrolled || isEnrolling) return;
+
     try {
+      setIsEnrolling(true);
+
       const token = localStorage.getItem("token");
 
       const res = await fetch(`${API}/upload/enroll/`, {
@@ -49,7 +74,7 @@ export default function InternshipDetail() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          internship_id: internship._id, // 🔥 dynamic later
+          internship_id: internship._id,
         }),
       });
 
@@ -59,9 +84,29 @@ export default function InternshipDetail() {
         throw new Error(data.error || "Enrollment failed");
       }
 
-      alert("✅ Enrolled successfully!");
+      if (data.message === "Already enrolled") {
+        setIsEnrolled(true);
+        showModal(
+          "Already Enrolled",
+          "You have already applied for this internship.",
+          "info",
+        );
+      } else {
+        setIsEnrolled(true);
+        showModal(
+          "Enrollment Successful!",
+          "You have successfully enrolled in this internship. Check your dashboard for details.",
+          "success",
+        );
+      }
     } catch (err: any) {
-      alert(err.message);
+      showModal(
+        "Enrollment Failed",
+        err.message || "Something went wrong. Please try again.",
+        "error",
+      );
+    } finally {
+      setIsEnrolling(false);
     }
   };
 
@@ -197,17 +242,69 @@ export default function InternshipDetail() {
                   </div>
                 ))}
               </div>
-
-              <motion.button
+              <button
                 onClick={handleEnroll}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-12 py-5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-lg rounded-2xl shadow-lg flex items-center gap-3 transition-all"
+                disabled={isEnrolling || isEnrolled}
+                className={`px-10 py-4 rounded-2xl text-lg font-semibold transition-all ${
+                  isEnrolled
+                    ? "bg-green-500 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                } text-white`}
               >
-                <Target size={22} />
-                Enroll Now
-              </motion.button>
+                {isEnrolled
+                  ? "Already Enrolled"
+                  : isEnrolling
+                    ? "Enrolling..."
+                    : "Enroll Now"}
+              </button>
             </div>
+
+            {/* ==================== ENROLLMENT MODAL ==================== */}
+            {showEnrollModal && (
+              <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+                <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl">
+                  <div className="px-8 pt-8 pb-6">
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`w-12 h-12 rounded-2xl flex items-center justify-center text-3xl ${
+                          modalType === "success"
+                            ? "bg-green-100 text-green-600"
+                            : modalType === "info"
+                              ? "bg-blue-100 text-blue-600"
+                              : "bg-red-100 text-red-600"
+                        }`}
+                      >
+                        {modalType === "success" ? (
+                          <CheckCircle />
+                        ) : (
+                          <AlertCircle />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-semibold text-gray-900">
+                          {modalTitle}
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="px-8 pb-8">
+                    <p className="text-gray-600 leading-relaxed">
+                      {modalMessage}
+                    </p>
+                  </div>
+
+                  <div className="border-t px-8 py-6 flex justify-end bg-gray-50 rounded-b-3xl">
+                    <button
+                      onClick={() => setShowEnrollModal(false)}
+                      className="px-8 py-3.5 bg-gray-900 text-white font-medium rounded-2xl hover:bg-black transition"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Video Section */}
             <motion.div

@@ -1,32 +1,62 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "motion/react";
-import { 
-  FaAward, FaDownload, FaEye, FaCalendarAlt, FaArrowLeft 
-} from "react-icons/fa";
+import { FaAward, FaDownload, FaEye, FaCalendarAlt } from "react-icons/fa";
 import Link from "next/link";
 import { useAuth } from "@/src/context/AuthContext";
+import { useEffect, useState } from "react";
+
+const API = process.env.NEXT_PUBLIC_APP_URL;
+
+interface Certificate {
+  id: string;
+  title: string;
+  course: string;
+  issuedDate: string;
+  certificateId: string;
+}
 
 export default function CertificatesPage() {
   const { user } = useAuth();
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+
+  useEffect(() => {
+    const fetchCertificates = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(`${API}/api/users/my-certificates/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to fetch certificates");
+        }
+
+        setCertificates(data.certificates || []);
+      } catch (err) {
+        console.error("CERT ERROR:", err);
+      }
+    };
+
+    if (user) {
+      fetchCertificates();
+    }
+  }, [user]);
 
   // Demo certificates (you can later replace with real data from backend)
-  const certificates = [
-    {
-      id: "uiux-design",
-      title: "Professional UI/UX Design Mastery",
-      course: "UI/UX Design Systems & Figma",
-      issuedDate: "April 07, 2026",
-      certificateId: "SKH-UIUX-2026-001",
-    },
-  ];
 
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold">Please login to view your certificates</h2>
+          <h2 className="text-2xl font-semibold">
+            Please login to view your certificates
+          </h2>
         </div>
       </div>
     );
@@ -56,12 +86,14 @@ export default function CertificatesPage() {
                     VERIFIED
                   </span>
                 </div>
-                <h3 className="text-2xl font-semibold leading-tight">{cert.title}</h3>
+                <h3 className="text-2xl font-semibold leading-tight">
+                  {cert.title}
+                </h3>
               </div>
 
               <div className="p-6">
                 <p className="font-medium text-gray-800">{cert.course}</p>
-                
+
                 <div className="flex items-center gap-2 text-sm text-gray-500 mt-4">
                   <FaCalendarAlt />
                   <span>Issued: {cert.issuedDate}</span>
@@ -81,6 +113,9 @@ export default function CertificatesPage() {
                   </Link>
 
                   <button
+                    onClick={() =>
+                      window.open(`/profile/certicate/${cert.id}`, "_blank")
+                    }
                     className="flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-50 px-6 rounded-3xl transition-all"
                   >
                     <FaDownload />
@@ -95,7 +130,9 @@ export default function CertificatesPage() {
           <div className="text-center py-20 text-gray-500">
             <FaAward size={80} className="mx-auto opacity-30 mb-4" />
             <p className="text-xl">No certificates yet</p>
-            <p className="text-sm mt-2">Complete a course to earn your first certificate</p>
+            <p className="text-sm mt-2">
+              Complete a course to earn your first certificate
+            </p>
           </div>
         )}
       </div>
