@@ -68,7 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       if (token && token !== "undefined" && token !== "null") {
-        await fetch("http://localhost:8000/api/users/logout/", {
+        await fetch(`${API}/api/users/logout/`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

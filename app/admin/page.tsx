@@ -324,12 +324,12 @@ export default function Dashboard() {
 
                     <td className="px-4 py-4">
                       <p className="font-medium text-gray-800">
-                        {enr.internship.title}
+                        {enr.internship?.title}
                       </p>
                     </td>
 
                     <td className="px-4 py-4 text-gray-600">
-                      {enr.internship.company}
+                      {enr.internship?.company}
                     </td>
 
                     <td className="px-4 py-4 text-sm text-gray-600">

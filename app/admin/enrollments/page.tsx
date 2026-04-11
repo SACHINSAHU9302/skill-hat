@@ -13,6 +13,7 @@ import {
   Building2,
   AlertTriangle,
   Send,
+  CheckCircle,
 } from "lucide-react";
 
 const API = process.env.NEXT_PUBLIC_APP_URL;
@@ -121,7 +122,6 @@ export default function EnrollmentsPage() {
           e._id === enr._id ? { ...e, certificate_issued: true } : e,
         ),
       );
-
     } catch (err: any) {
       alert(err.message);
     }
@@ -172,7 +172,13 @@ export default function EnrollmentsPage() {
 
   // Helper Functions
   const uniqueCompanies = useMemo(() => {
-    return [...new Set(enrollments.map((e) => e.internship.company))].sort();
+    return [
+      ...new Set(
+        enrollments
+          .map((e) => e.internship?.company) // ✅ safe
+          .filter(Boolean), // ✅ remove null/undefined
+      ),
+    ].sort();
   }, [enrollments]);
 
   const getUniqueKey = (enr: Enrollment) => enr._id;
@@ -460,11 +466,11 @@ export default function EnrollmentsPage() {
                     </div>
                     <div>
                       <p className="font-medium text-gray-800">
-                        {enr.internship.title}
+                        {enr.internship?.title}
                       </p>
                       <div className="flex items-center gap-1 text-sm text-gray-500">
                         <Building2 className="w-4 h-4" />{" "}
-                        {enr.internship.company}
+                        {enr.internship?.company}
                       </div>
                     </div>
                   </div>
@@ -477,7 +483,7 @@ export default function EnrollmentsPage() {
                 <div className="mt-8 flex gap-3">
                   {enr.certificate_issued ? (
                     <span className="flex-1 flex items-center justify-center bg-green-100 text-green-700 py-3 rounded-2xl text-sm font-medium">
-                      Issued ✅
+                      Issued <CheckCircle className="w-4 h-4 text-green-600" />
                     </span>
                   ) : (
                     <button
@@ -616,10 +622,10 @@ export default function EnrollmentsPage() {
                 <p className="font-semibold">{enrollmentToDelete.user.name}</p>
                 <p className="text-xs text-gray-500 mt-3">Internship:</p>
                 <p className="font-medium">
-                  {enrollmentToDelete.internship.title}
+                  {enrollmentToDelete.internship?.title}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {enrollmentToDelete.internship.company}
+                  {enrollmentToDelete.internship?.company}
                 </p>
               </div>
             </div>

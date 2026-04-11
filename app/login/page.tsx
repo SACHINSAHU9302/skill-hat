@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/src/context/AuthContext";
 
-const API = process.env.NEXT_PUBLIC_APP_URL
+const API = process.env.NEXT_PUBLIC_APP_URL;
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -64,7 +64,7 @@ export default function Login() {
     }
 
     try {
-      const res = await fetch("http://localhost:8000/api/users/login/", {
+      const res = await fetch(`${API}/api/users/login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,14 +85,11 @@ export default function Login() {
       localStorage.setItem("token", data.token);
 
       // 🔥 IMPORTANT: fetch user from backend
-      const profileRes = await fetch(
-        `${API}/api/users/profile/`,
-        {
-          headers: {
-            Authorization: `Bearer ${data.token}`,
-          },
+      const profileRes = await fetch(`${API}/api/users/profile/`, {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
         },
-      );
+      });
 
       const userData = await profileRes.json();
 
